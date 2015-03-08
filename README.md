@@ -55,6 +55,5 @@ repository.
 Please see the LICENSE file included in the package.
 
 ---
-
-http://manishjethani.com/
+Copyright (c) 2015 Manish Jethani
 
