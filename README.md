@@ -46,8 +46,11 @@ https://blog.manishjethani.com/typo-steganography
 
 ### Issues
 
-Feel free to report any problems directly to me at manish.jethani+typo@gmail.com.
-I'm going to set up a GitHub project very soon.
+Feel free to report any problems directly to me at
+manish.jethani+typo@gmail.com. You can also [track issues][2] on the GitHub
+repository.
+
+[2]:https://github.com/mjethani/typo/issues
 
 ### License
 
