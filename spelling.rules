@@ -1,0 +1,12 @@
+# Copyright (c) 2015 Manish Jethani
+
+#
+# Spelling mistakes.
+#
+
+([^aeiou])ight$	$1ite	# light => lite
+([^aeiou])eight$	$1ait	# weight => wait
+([^aeiou])aire?$	$1are	# fair => fare
+([^aeiou])o([r])e$	$1oa$2	# shore => shoar
+
+# vim: ts=16

@@ -1,0 +1,23 @@
+{
+  "name": "typo-steganography",
+  "version": "0.2.0",
+  "description": "Hide secret information in typographical errors",
+  "author": {
+    "name": "Manish Jethani",
+    "email": "manish.jethani@gmail.com"
+  },
+  "bin": {
+    "typo": "./typo"
+  },
+  "keywords": [
+    "steganography",
+    "encryption",
+    "text"
+  ],
+  "preferGlobal": true,
+  "bugs": {
+    "email": "manish.jethani+typo@gmail.com"
+  },
+  "license": "ISC"
+}
+

@@ -1,0 +1,35 @@
+# Copyright (c) 2015 Manish Jethani
+
+#
+# Incorrect grammar/punctuation.
+#
+
+#,$		# 'Hello, world!' => 'Hello world!'
+#\?$	.	# 'Why me?' => 'Why me.'
+
+([a-z])-([a-z])	$1$2	# non-obvious => nonobvious
+
+n't$	nt	# don't => dont
+
+([^aeiou's])s$	$1	# books => book
+
+'s$	s	# Jack's => Jacks
+^([Ii])ts$	$1t's	# its => it's
+^([Oo])nes$	$1ne's	# ones => one's
+^([Yy])our$	$1ou're	# your => you're
+^([Yy])ou're$	$1our	# you're => your
+^([Hh])e's$	$1is	# he's => his
+^([Hh])is$	$1e's	# his => he's
+^([Ww])e're$	$1ere	# we're => were
+^([Ww])ere$	$1e're	# were => we're
+^([Tt])ere$	$1heir	# there => their
+^([Tt])eir$	$1here	# their => there
+^([Tt])ey're$	$1heir	# they're => their
+^([Tt])eir$	$1hey're	# their => they're
+
+^([Yy])ours$	$1our's	# yours => your's
+^([Hh])ers$	$1er's	# hers => her's
+^([Ou])urs$	$1ur's	# ours => our's
+^([Tt])heirs$	$1heir's	# theirs => their's
+
+# vim: ts=16

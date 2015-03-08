@@ -1,0 +1,104 @@
+usage: typo <secret> [--file=<file>] [--output-file=<output-file>]
+            [--format=hex|base64] [--password[=<password>]] [--nosalt]
+            [--markup] [--deterministic] [--alternative]
+            [--ruleset-file=<ruleset-file>]
+       typo --decode --original-file=<original-file>
+            [--file=<file>] [--output-file=<output-file>]
+            [--format=hex|base64] [--password[=<password>]] [--nosalt]
+            [--markup]
+
+These are the options:
+
+  <secret>
+      The secret you want to encode.
+
+  --file=<file>, -f <file>
+      The input file for encoding or decoding.
+
+      If not specified, the program reads from standard input.
+
+  --output-file=<output-file>, -o <output-file>
+      The file to which the modified text should be saved.
+
+      If not specified, the program writes to standard output.
+
+  --format=hex|base64
+      How to interpret the secret for encoding or how to format it for output
+      after decoding.
+
+      By default the secret is treated as a regular string. If format is hex,
+      the secret is treated as the hexadecimal representation of a binary file.
+      If it is base64, the secret is treated as the Base64 representation of a
+      binary file.
+
+  --password[=<password>], -p <password>, -P
+      The password used for encrypting the secret before encoding or for
+      decrypting the secret after decoding.
+
+  --nosalt
+      Do not use any salt for encryption.
+
+      By default the original text is used as the salt. If the original text is
+      lost or corrupted in any way, it is impossible to recover the secret.
+      With this option set only the password is used for encryption.
+
+  --decode, -d
+      Decode instead of encoding.
+
+  --original-file=<original-file>, -g <original-file>
+      The original file before any typos were introduced.
+
+      It should be possible to 'reconstruct' this file simply by correcting the
+      typos, either manually or using a spellchecker.
+
+  --markup
+      Include markup ('{[s/.../.../]}') in the output while encoding, or parse
+      markup in the input while decoding.
+
+  --deterministic
+      Do not use randomization in the encoding process.
+
+      With this option set, the same input will always give the same output.
+
+  --alternative
+      Try alternative spellings.
+
+      For example, spell 'okay' as 'OK', and 'yes' as 'yeah'. Note that these
+      aren't spelling errors at all. This option makes it extremely difficult
+      to recover the secret.
+
+  --ruleset-file=<ruleset-file>
+      The ruleset file to use for typo generation.
+
+      This is a file containing tab-separated values. Each row is a rule. The
+      first field is the word pattern to match, the second field is the
+      replacement text.
+
+Examples:
+
+  (1)   typo '4pm Pier39' --file=email.txt > email-typo.txt
+
+      Hide the message '4pm Pier39' in the text of email.txt by introducing
+      typographical errors, and save the output to email-typo.txt.
+
+  (2)   typo 57F8965374611F9CEEF9578BFBDC955CE6B74303 --format=hex < hello.txt
+
+      Encode the PGP key fingerprint (20 bytes) into the text of hello.txt and
+      print the output to the console.
+
+  (3)   typo --decode --file=change.txt --original-file=hope.txt
+
+      Extract secret information from typos in change.txt using hope.txt as the
+      original file.
+
+  (4)   typo --format=base64 $(base64 heart.png) < love-letter.txt | pbcopy
+
+      Encode the contents of heart.png (image) into the text of love-letter.txt
+      and copy the result to the clipboard.
+
+  (5)   typo --decode --original-file=top-secret.txt --password=0000 < file.txt
+
+      Extract top secret information from file.txt using the password '0000'.
+
+-- 
+Copyright (c) 2015 Manish Jethani                      http://manishjethani.com/

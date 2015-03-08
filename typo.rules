@@ -1,0 +1,52 @@
+# Copyright (c) 2015 Manish Jethani
+
+#
+# Typing errors.
+#
+
+(.)\1	$1$1$1	# hello => helllo
+([^aeiou])\1	$1	# fiddle => fidle
+([^aeiou])io([^aeiou])	$1oi$2	# nation => natoin
+([^aeiou])oi([^aeiou])	$1io$2	# avoid => aviod
+([^aeiou])ie([^aeiou])	$1ei$2	# fried => freid
+([^aeiou])ei([^aeiou])	$1ie$2	# deceit => deciet
+([^aeiou])ia([^aeiou])	$1ai$2	# trial => trail
+([^aeiou])ai([^aeiou])	$1ia$2	# bait => biat
+([^aeiou])oa([^aeiou])	$1oa$2	# goal => gaol
+([^aeiou])ao([^aeiou])	$1oa$2	# chaos => choas
+([^aeiou])ou([^aeiou])	$1uo$2	# soul => suol
+uo([^aeiou])	ou$1	# sequoia => seqouia
+sh	shh	# shell => shhell
+ch	chh	# character => chharacter
+(.)th	$1thh	# other => othher
+tch	cth	# watch => wacth
+dj	j	# adjourn => ajourn
+dg	g	# judge => juge
+ue	eu	# fuel => feul
+eu	ue	# adieu = >adiue
+ui	iu	# fruit => friut
+iu	ui	# aluminium => aluminuim
+([^aeiou])au	$1ua	# applaud => appluad
+([^aeiou])ua	$1au	# dual => daul
+rd	rrd	# third => thirrd
+ck$	k	# quick => quik
+x$	xz	# mix => mixz
+([^aeiou])ed$	$1d	# marked => markd
+([^aeiou])er$	$1r	# flicker => flickr
+([aeiou])rn$	$1nr	# return => retunr
+(.)([^aeiou])al$	$1$2l	# traditional => traditionl
+nge$	gne	# strange => stragne
+ing$	ign	# interesting => interestign
+^quo	qo	# quote => qote
+^que	quie	# question => quiestion
+able$	abel	# comfortable => comfortabel
+ious	ous	# egregious => egregous
+ious	ius	# egregious => egregius
+ius(ly|ness)?$	ious$1	# genius => genious
+ous(ly|ness)?$	ious$1	# mischievously => mischieviously
+([ae])te$	$1t	# complete => complet
+ank$	aml	# bank => baml
+ld$	dl	# hold => hodl
+ps([aeiouy])	s$1	# psychology => sychology
+
+# vim: ts=16
