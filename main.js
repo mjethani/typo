@@ -31,6 +31,15 @@ var wordCharacter = /[A-Za-z'-]/;
 
 var wordPattern = /^'?[A-Za-z]+-?[A-Za-z]+'?[A-Za-z]'?$/;
 
+function sliceArguments(begin, end) {
+  return Array.prototype.slice.call(sliceArguments.caller.arguments,
+      begin, end);
+}
+
+function async(func) {
+  return setTimeout.bind(null, func, 1).apply(null, sliceArguments(1));
+}
+
 function chain(list, errorCallback, doneCallback) {
   // Basically why I love JavaScript.
 
@@ -39,7 +48,7 @@ function chain(list, errorCallback, doneCallback) {
   // error callback. Once the list has been exhausted, the final result goes to
   // the done callback.
 
-  var params = Array.prototype.slice.call(arguments, 3);
+  var params = sliceArguments(3);
 
   var func = list.shift();
 
@@ -49,25 +58,25 @@ function chain(list, errorCallback, doneCallback) {
         errorCallback(error);
       } else {
         chain.bind(null, list, errorCallback, doneCallback)
-            .apply(null, Array.prototype.slice.call(arguments, 1));
+            .apply(null, sliceArguments(1));
       }
     });
   } else {
     func = doneCallback;
   }
 
-  setTimeout(function () {
+  async(function () {
     try {
       func.apply(null, params);
     } catch (error) {
       errorCallback(error);
     }
-  }, 1);
+  });
 }
 
 function die() {
   if (arguments.length > 0) {
-    console.error.apply(console, Array.prototype.slice.call(arguments));
+    console.error.apply(console, arguments);
   }
 
   process.exit(1);
@@ -102,7 +111,7 @@ function parseArgs(args) {
   // You can pass in default values and a mapping of short names to long names
   // as the first and second arguments respectively.
 
-  var rest = Array.prototype.slice.call(arguments, 1);
+  var rest = sliceArguments(1);
 
   var defaultOptions  = typeof rest[0] === 'object' && rest.shift() || {};
   var shortcuts       = typeof rest[0] === 'object' && rest.shift() || {};
@@ -434,8 +443,7 @@ function readPassword(password, callback) {
   if (password === true) {
     prompt('Password: ', true, callback);
   } else {
-    setTimeout(callback, 1, null,
-        typeof password === 'string' ? password : null);
+    async(callback, null, typeof password === 'string' ? password : null);
   }
 }
 
