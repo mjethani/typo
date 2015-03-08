@@ -15,7 +15,12 @@
     "text"
   ],
   "preferGlobal": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mjethani/typo.git"
+  },
   "bugs": {
+    "url": "https://github.com/mjethani/typo/issues",
     "email": "manish.jethani+typo@gmail.com"
   },
   "license": "ISC"
