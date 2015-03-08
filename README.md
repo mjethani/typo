@@ -40,9 +40,7 @@ See `typo --help` for basics.
 
 More examples, theory, and specification will be included in future releases.
 
-You can also look here:
-
-https://blog.manishjethani.com/typo-steganography
+https://mjethani.github.io/typo/
 
 ### Issues
 
