@@ -23,6 +23,8 @@ n't$	nt	# don't => dont
 ^([Tt])eir$	$1here	# their => there
 ^([Tt])ey're$	$1heir	# they're => their
 ^([Tt])eir$	$1hey're	# their => they're
+^([Ll])et's$	$1ets	# let's => lets
+^([Ll])ets$	$1et's	# lets => let's
 
 ^([Yy])ours$	$1our's	# yours => your's
 ^([Hh])ers$	$1er's	# hers => her's
