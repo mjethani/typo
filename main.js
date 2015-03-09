@@ -658,6 +658,9 @@ function encode(text, secret, format, password, nosalt, markup,
         if (newWord !== word) {
           if (markup) {
             replacement = '{[s/' + newWord + '/' + word + '/]}';
+
+            // Once you're satisfied with the result, open in Vim and do this:
+            // %s/{\[s\/\([^\/]\+\)\/[^\/]\+\/\]}/\1/g
           }
 
           if (offset < buffer.length) {
