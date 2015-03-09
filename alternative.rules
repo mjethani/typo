@@ -4,7 +4,9 @@
 # Alternative spellings.
 #
 
-^[Oo]kay$	OK
-^([Yy])es$	$1eah
+^[Oo]kay$	OK	# okay => OK
+^([Yy])es$	$1eah	# yes => yeah
+
+^and$	'n	# and => 'n
 
 # vim: ts=16

@@ -4,9 +4,6 @@
 # Incorrect grammar/punctuation.
 #
 
-#,$		# 'Hello, world!' => 'Hello world!'
-#\?$	.	# 'Why me?' => 'Why me.'
-
 ([a-z])-([a-z])	$1$2	# non-obvious => nonobvious
 
 n't$	nt	# don't => dont
