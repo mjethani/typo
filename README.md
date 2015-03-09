@@ -40,7 +40,7 @@ See `typo --help` for basics.
 
 More examples, theory, and specification are coming shortly.
 
-https://mjethani.github.io/typo
+http://mjethani.github.io/typo
 
 ### Issues
 
