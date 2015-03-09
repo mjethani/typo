@@ -38,9 +38,9 @@ by correcting the spelling errors.
 
 See `typo --help` for basics.
 
-More examples, theory, and specification will be included in future releases.
+More examples, theory, and specification are coming shortly.
 
-https://mjethani.github.io/typo/
+https://mjethani.github.io/typo
 
 ### Issues
 
