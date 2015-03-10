@@ -776,7 +776,6 @@ function getOptions() {
     '-f': '--file=',
     '-o': '--output-file=',
     '-g': '--original-file=',
-    '-p': '--password=',
     '-P': '--password',
   };
 

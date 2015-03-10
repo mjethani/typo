@@ -31,7 +31,7 @@ These are the options:
       If it is base64, the secret is treated as the Base64 representation of a
       binary file.
 
-  --password[=<password>], -p <password>, -P
+  --password[=<password>], -P
       The password used for encrypting the secret before encoding or for
       decrypting the secret after decoding.
 
