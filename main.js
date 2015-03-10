@@ -137,9 +137,9 @@ function parseArgs(args) {
           return obj;
         }
 
-        obj[name] = arg.slice(eq + 1)
-            || typeof defaultOptions[name] === 'boolean'
-            || null;
+        obj[name] = typeof defaultOptions[name] === 'boolean'
+            && eq === arg.length
+            || arg.slice(eq + 1);
 
       } else if (expect) {
         obj[expect] = arg;
