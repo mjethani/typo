@@ -761,7 +761,7 @@ function getOptions() {
     'output-file':    null,
     'original-file':  null,
     'format':         null,
-    'password':       null,
+    'password':       false,
     'nosalt':         false,
     'markup':         false,
     'deterministic':  false,
