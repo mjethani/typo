@@ -79,13 +79,13 @@ These are the options:
       first field is the word pattern to match, the second field is the
       replacement text.
 
-  --verbose
+  --verbose, -v
       Verbose mode.
 
   --help, -h, -?
       Print help.
 
-  --version, -v
+  --version, -V
       Display version information.
 
   --license

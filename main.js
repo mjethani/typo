@@ -832,9 +832,10 @@ function run() {
   };
 
   var shortcuts = {
-    '-v': '--version',
+    '-V': '--version',
     '-h': '--help',
     '-?': '--help',
+    '-v': '--verbose',
     '-d': '--decode',
     '-f': '--file=',
     '-o': '--output-file=',
