@@ -622,6 +622,8 @@ function encode(text, secret, format, password, nosalt, markup,
   var multiplier = 1.0;
 
   do {
+    var workingBuffer = new Buffer(buffer);
+
     var word = '';
     var count = 0;
 
@@ -648,7 +650,7 @@ function encode(text, secret, format, password, nosalt, markup,
             var bar = count / i / targetDensity || 0;
 
             if (bar < 1.0) {
-              newWord = processWord(word, buffer, offset);
+              newWord = processWord(word, workingBuffer, offset);
             } else {
               newWord = word;
             }
@@ -673,7 +675,7 @@ function encode(text, secret, format, password, nosalt, markup,
 
             if (offset < buffer.length) {
               // Bring the next 4 bits into position.
-              buffer[offset] >>>= 4;
+              workingBuffer[offset] >>>= 4;
             } else {
               odd = false;
             }
