@@ -55,7 +55,10 @@ function sliceArguments(begin, end) {
 }
 
 function async(func) {
-  return setTimeout.bind(null, func, 1).apply(null, sliceArguments(1));
+  var args = sliceArguments(1);
+  process.nextTick(function () {
+    func.apply(null, args);
+  });
 }
 
 function chain(list, errorCallback, doneCallback) {
