@@ -82,7 +82,7 @@ These are the options:
   --verbose
       Verbose mode.
 
-  --help, -h
+  --help, -h, -?
       Print help.
 
   --version, -v

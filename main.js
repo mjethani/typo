@@ -834,6 +834,7 @@ function run() {
   var shortcuts = {
     '-v': '--version',
     '-h': '--help',
+    '-?': '--help',
     '-d': '--decode',
     '-f': '--file=',
     '-o': '--output-file=',
