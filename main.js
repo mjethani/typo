@@ -78,8 +78,8 @@ function chain(list, errorCallback, doneCallback) {
       if (error) {
         errorCallback(error);
       } else {
-        chain.bind(null, list, errorCallback, doneCallback)
-            .apply(null, sliceArguments(1));
+        chain.apply(null, [ list, errorCallback, doneCallback ]
+              .concat(sliceArguments(1)));
       }
     });
   } else {
