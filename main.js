@@ -750,7 +750,13 @@ function decode(text, originalText, format, password, nosalt) {
         password), format);
 }
 
-function getOptions() {
+function run() {
+  if (process.argv.length <= 2) {
+    dieOnExit();
+    printUsage();
+    return;
+  }
+
   var defaultOptions = {
     'version':        false,
     'help':           false,
@@ -779,32 +785,13 @@ function getOptions() {
     '-P': '--password',
   };
 
-  return parseArgs(process.argv.slice(2), defaultOptions, shortcuts, 'secret');
-}
+  var options = parseArgs(process.argv.slice(2), defaultOptions, shortcuts,
+      'secret');
 
-function validateOptions(options) {
-  if (options.version || options.help) {
-    return;
-  }
-
-  var seeHelp = os.EOL + os.EOL + "See '" + _name + " --help'."
-      + os.EOL + os.EOL;
-
-  if (options.decode && !options['original-file'] && !options.markup) {
-    return "Required '--original-file' or '--markup' argument." + seeHelp;
-  }
-
-  if (options.format != null && options.format != 'hex'
-      && options.format != 'base64') {
-    return "Format must be 'hex' or 'base64'." + seeHelp;
-  }
-}
-
-function run() {
-  var options = getOptions();
-
-  if (options.version) {
-    printVersion();
+  if ((options.help || options.version || options.license)
+      && Object.keys(options).length > 1) {
+    dieOnExit();
+    printUsage();
     return;
   }
 
@@ -813,9 +800,37 @@ function run() {
     return;
   }
 
+  if (options.version) {
+    printVersion();
+    return;
+  }
+
   if (options.license) {
     printLicense();
     return;
+  }
+
+  var seeHelp = os.EOL + os.EOL + "See '" + _name + " --help'."
+      + os.EOL;
+
+  var name = null;
+
+  for (name in options) {
+    if (!defaultOptions.hasOwnProperty(name)) {
+      die("Unknown option '" + name + "'." + seeHelp);
+    }
+  }
+
+  for (name in defaultOptions) {
+    // If any boolean options have non-boolean (string) values, print usage and
+    // exit.
+    if (typeof defaultOptions[name] === 'boolean'
+        && typeof options[name] !== 'boolean'
+        && name !== 'password') {
+      dieOnExit();
+      printUsage();
+      return;
+    }
   }
 
   if (typeof options.secret !== 'string' && !options.decode) {
@@ -824,9 +839,20 @@ function run() {
     return;
   }
 
-  var errorMessage = validateOptions(options);
-  if (errorMessage) {
-    die(errorMessage);
+  for (name in options) {
+    if ((name === 'file' || name.slice(-5) === '-file')
+        && options[name] === '') {
+      die('Filename cannot be blank.' + seeHelp);
+    }
+  }
+
+  if (options.decode && !options['original-file'] && !options.markup) {
+    die("Required '--original-file' or '--markup' argument." + seeHelp);
+  }
+
+  if (options.format != null && options.format != 'hex'
+      && options.format != 'base64') {
+    die("Format must be 'hex' or 'base64'." + seeHelp);
   }
 
   chain([
