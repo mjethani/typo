@@ -588,7 +588,7 @@ function extractTyposFromMarkup(text) {
 
 function encode(text, secret, format, password, nosalt, markup,
     deterministic) {
-  var result = '';
+  var result = null;
 
   // Convert the string into a buffer and encrypt the buffer using the given
   // password and the text.
@@ -598,9 +598,6 @@ function encode(text, secret, format, password, nosalt, markup,
   // password is null, an empty password is used anyway.
   var buffer = encrypt(stringToBuffer(secret, format), !nosalt && text || '',
       password);
-
-  var word = '';
-  var count = 0;
 
   var random = null;
   var odd = false;
@@ -618,74 +615,88 @@ function encode(text, secret, format, password, nosalt, markup,
 
   // This is the ratio of the total number of typos to the text length. It's
   // the rate at which typos should be introduced. We want to make sure the
-  // typos are spread out.
-  var rate = (buffer.length * 2 + odd) / text.length;
+  // typos are spread out more or less evenly.
+  var density = (buffer.length * 2 + odd) / text.length;
 
-  for (var i = 0; i < text.length; i++) {
-    var c = text[i];
+  // This is how much we try to squeeze the information into the text.
+  var multiplier = 1.0;
 
-    if (c.match(wordCharacter)) {
-      word += c;
-    } else {
-      if (word) {
-        // Here we're dividing count by two and rounding down. The offset into
-        // the buffer is half of the number of typos already introduced,
-        // because each typo carries only 4 bits of information.
-        var offset = count >>> 1;
-        var newWord = null;
+  do {
+    var word = '';
+    var count = 0;
 
-        if (offset < buffer.length) {
-          // Adjust the bar for letting in the next typo based on the current
-          // rate.
-          var bar = count / i / rate || 0;
+    var targetDensity = density * multiplier;
 
-          if (bar < 1.0) {
-            newWord = processWord(word, buffer, offset);
+    result = '';
+
+    for (var i = 0; i < text.length; i++) {
+      var c = text[i];
+
+      if (c.match(wordCharacter)) {
+        word += c;
+      } else {
+        if (word) {
+          // Here we're dividing count by two and rounding down. The offset
+          // into the buffer is half of the number of typos already introduced,
+          // because each typo carries only 4 bits of information.
+          var offset = count >>> 1;
+          var newWord = null;
+
+          if (offset < buffer.length) {
+            // Adjust the bar for letting in the next typo based on the current
+            // rate.
+            var bar = count / i / targetDensity || 0;
+
+            if (bar < 1.0) {
+              newWord = processWord(word, buffer, offset);
+            } else {
+              newWord = word;
+            }
+
+          } else if (odd) {
+            // Throw in the extra typo.
+            newWord = processWord(word, random, 0);
+
           } else {
             newWord = word;
           }
 
-        } else if (odd) {
-          // Throw in the extra typo.
-          newWord = processWord(word, random, 0);
+          var replacement = newWord;
 
-        } else {
-          newWord = word;
+          if (newWord !== word) {
+            if (markup) {
+              replacement = '{[s/' + newWord + '/' + word + '/]}';
+
+              // Once you're satisfied with the result, open in Vim and do:
+              // %s/{\[s\/\([^\/]\+\)\/[^\/]\+\/\]}/\1/g
+            }
+
+            if (offset < buffer.length) {
+              // Bring the next 4 bits into position.
+              buffer[offset] >>>= 4;
+            } else {
+              odd = false;
+            }
+
+            if (++count >>> 1 >= buffer.length && !odd) {
+              // Optimization: We don't want any more typos. Just add the rest
+              // of the text and move on.
+              result += replacement;
+              result += text.slice(i);
+              break;
+            }
+          }
+
+          result += replacement;
+          word = '';
         }
 
-        var replacement = newWord;
-
-        if (newWord !== word) {
-          if (markup) {
-            replacement = '{[s/' + newWord + '/' + word + '/]}';
-
-            // Once you're satisfied with the result, open in Vim and do this:
-            // %s/{\[s\/\([^\/]\+\)\/[^\/]\+\/\]}/\1/g
-          }
-
-          if (offset < buffer.length) {
-            // Bring the next 4 bits into position.
-            buffer[offset] >>>= 4;
-          } else {
-            odd = false;
-          }
-
-          if (++count >>> 1 >= buffer.length && !odd) {
-            // Optimization: We don't want any more typos. Just add the rest of
-            // the text and move on.
-            result += replacement;
-            result += text.slice(i);
-            break;
-          }
-        }
-
-        result += replacement;
-        word = '';
+        result += c;
       }
-
-      result += c;
     }
-  }
+
+    // Try again if required with a higher density.
+  } while (count >>> 1 < buffer.length && (multiplier *= 1.1) <= 10.0);
 
   if (count >>> 1 < buffer.length) {
     // This is the main problem. The input text simply isn't big enough for the
