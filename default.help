@@ -2,10 +2,12 @@ usage: typo <secret> [--file=<file>] [--output-file=<output-file>]
             [--format=hex|base64] [--password[=<password>]] [--nosalt]
             [--markup] [--deterministic] [--alternative]
             [--ruleset-file=<ruleset-file>]
+            [--verbose]
        typo --decode --original-file=<original-file>
             [--file=<file>] [--output-file=<output-file>]
             [--format=hex|base64] [--password[=<password>]] [--nosalt]
             [--markup]
+            [--verbose]
        typo --help
        typo --version
        typo --license
@@ -76,6 +78,9 @@ These are the options:
       This is a file containing tab-separated values. Each row is a rule. The
       first field is the word pattern to match, the second field is the
       replacement text.
+
+  --verbose
+      Verbose mode.
 
   --help, -h
       Print help.

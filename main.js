@@ -31,6 +31,24 @@ var wordCharacter = /[A-Za-z'-]/;
 
 var wordPattern = /^'?[A-Za-z]+-?[A-Za-z]+'?[A-Za-z]'?$/;
 
+var say = function () {};
+
+function sayImpl(prefix) {
+  if (!prefix) {
+    return console.error;
+  } else if (typeof prefix === 'function') {
+    return function () {
+      console.error.apply(console, [ prefix() ].concat(
+            sliceArguments(arguments)));
+    };
+  } else {
+    return function () {
+      console.error.apply(console, [ prefix ].concat(
+            sliceArguments(arguments)));
+    };
+  }
+}
+
 function sliceArguments(begin, end) {
   return Array.prototype.slice.call(sliceArguments.caller.arguments,
       begin, end);
@@ -89,8 +107,13 @@ function dieOnExit() {
 function printOutput(string, filename) {
   if (string != null) {
     if (filename) {
+      say('Writing output to file ' + filename);
+
       fs.writeFileSync(filename, string);
+
     } else {
+      say('Writing output to stdout');
+
       process.stdout.write(string);
     }
   }
@@ -432,6 +455,8 @@ function loadRules(name) {
     return rules[name];
   }
 
+  say('Loading ruleset ' + name);
+
   return loadRulesetFile(path.join(__dirname, name + '.rules'), name);
 }
 
@@ -449,8 +474,13 @@ function readPassword(password, callback) {
 
 function readInputText(filename, callback) {
   if (filename) {
+    say('Reading input from file ' + filename);
+
     slurpFile(filename, callback);
+
   } else {
+    say('Reading input from stdin');
+
     slurp(callback);
   }
 }
@@ -590,6 +620,8 @@ function encode(text, secret, format, password, nosalt, markup,
     deterministic) {
   var result = null;
 
+  say('Encrypting ...');
+
   // Convert the string into a buffer and encrypt the buffer using the given
   // password and the text.
   // 
@@ -598,6 +630,11 @@ function encode(text, secret, format, password, nosalt, markup,
   // password is null, an empty password is used anyway.
   var buffer = encrypt(stringToBuffer(secret, format), !nosalt && text || '',
       password);
+
+  say('Encrypted secret:', buffer.toString('hex').toUpperCase()
+      .match(/.{2}/g).join(' '));
+
+  say('Buffer size: ' + buffer.length);
 
   var random = null;
   var odd = false;
@@ -618,10 +655,14 @@ function encode(text, secret, format, password, nosalt, markup,
   // typos are spread out more or less evenly.
   var density = (buffer.length * 2 + odd) / text.length;
 
+  say('Density: ' + (density * 1000).toFixed(4) + ' per thousand');
+
   // This is how much we try to squeeze the information into the text.
   var multiplier = 1.0;
 
   do {
+    say('Trying with multiplier ' + multiplier.toFixed(4));
+
     var workingBuffer = new Buffer(buffer);
 
     var word = '';
@@ -697,6 +738,8 @@ function encode(text, secret, format, password, nosalt, markup,
       }
     }
 
+    say('Score: ' + count + ' / ' + buffer.length * 2);
+
     // Try again if required with a higher density.
   } while (count >>> 1 < buffer.length && (multiplier *= 1.1) <= 10.0);
 
@@ -714,6 +757,8 @@ function decode(text, originalText, format, password, nosalt) {
   var buffer = null;
 
   var extractInfo = null;
+
+  say('Extracting typos');
 
   if (originalText != null) {
     // If we have the original text, we're only interested in extracting the
@@ -733,6 +778,8 @@ function decode(text, originalText, format, password, nosalt) {
 
   buffer = new Buffer(extractInfo.typos.length / 2);
 
+  say('Buffer size: ' + buffer.length);
+
   for (var i = 0; i < extractInfo.typos.length; i++) {
     var d = mash(hash(extractInfo.typos[i]));
 
@@ -744,6 +791,11 @@ function decode(text, originalText, format, password, nosalt) {
       buffer[i >>> 1] |= d << 4 & 0xF0;
     }
   }
+
+  say('Encrypted secret:', buffer.toString('hex').toUpperCase()
+      .match(/.{2}/g).join(' '));
+
+  say('Decrypting ...');
 
   // Finally, decrypt the buffer to get the original secret.
   return bufferToString(decrypt(buffer, !nosalt && extractInfo.text || '',
@@ -773,6 +825,7 @@ function run() {
     'deterministic':  false,
     'alternative':    false,
     'ruleset-file':   null,
+    'verbose':        false,
   };
 
   var shortcuts = {
@@ -855,6 +908,14 @@ function run() {
     die("Format must be 'hex' or 'base64'." + seeHelp);
   }
 
+  if (options.verbose) {
+    say = sayImpl(function () {
+      return '[' + process.uptime().toFixed(2) + ']';
+    });
+  }
+
+  say('Hi!');
+
   chain([
       function (callback) {
         readPassword(options.password, callback);
@@ -869,9 +930,12 @@ function run() {
       function (password, text, callback) {
         if (options.decode && !options.markup) {
           // Read the original file.
+          say('Reading original file ' + options['original-file']);
+
           slurpFile(options['original-file'], function (error, originalText) {
             callback(error, password, text, originalText);
           });
+
         } else {
           callback(null, password, text, null);
         }
@@ -884,7 +948,10 @@ function run() {
           if (rulesetFile) {
             rulesetOrder.push('custom');
 
+            say('Loading ruleset file ' + rulesetFile);
+
             loadRulesetFile(rulesetFile, 'custom');
+
           } else {
             if (options.alternative) {
               rulesetOrder.push('alternative');
@@ -894,6 +961,8 @@ function run() {
           }
 
           if (!options.deterministic) {
+            say('Shuffling rules');
+
             rulesetOrder.forEach(shuffleRules);
           }
         }
@@ -905,8 +974,12 @@ function run() {
         var secret = null;
 
         if (options.decode) {
+          say('Decoding');
+
           secret = decode(text, originalText, options.format, password,
               options.nosalt);
+
+          say('Secret: ' + secret);
 
           // Note: secret can be an empty string! It's an error only if it's
           // null or undefined.
@@ -925,6 +998,10 @@ function run() {
           return;
         }
 
+        say('Secret: ' + options.secret);
+
+        say('Encoding');
+
         var output = encode(text, options.secret, options.format, password,
             options.nosalt, options.markup, options.deterministic);
 
@@ -937,15 +1014,23 @@ function run() {
     ],
 
     function (error) {
-      logError(error), die();
+      logError(error);
+
+      say('Sorry, we failed');
+
+      die();
     },
 
     function (finalResult) {
+      say('Almost done!');
+
       if (options.decode || !options['output-file'] && process.stdout.isTTY) {
         console.log(finalResult);
       } else {
         printOutput(finalResult, options['output-file']);
       }
+
+      say('Goodbye');
     }
   );
 }
