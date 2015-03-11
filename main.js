@@ -250,29 +250,14 @@ function parseTabularData(data) {
   });
 }
 
-function stringToBufferHex(string) {
-  if (string.length % 2 === 1) {
-    string = '0' + string;
-  }
-
-  var buffer = new Buffer(string.length / 2);
-
-  for (var i = 0; i < buffer.length; i++) {
-    buffer[i] = parseInt(string.slice(i * 2, i * 2 + 2), 16);
-  }
-
-  return buffer;
-}
-
 function stringToBuffer(string, format) {
   var buffer = null;
 
   switch (format) {
   case 'hex':
-    buffer = stringToBufferHex(string);
-    break;
+    string = '0'.slice(0, string.length % 2) + string;
   case 'base64':
-    buffer = new Buffer(string, 'base64');
+    buffer = new Buffer(string, format);
     break;
   default:
     buffer = new Buffer(string);
@@ -281,25 +266,13 @@ function stringToBuffer(string, format) {
   return buffer;
 }
 
-function bufferToStringHex(buffer) {
-  var string = '';
-
-  for (var i = 0; i < buffer.length; i++) {
-    string += ('0' + buffer[i].toString(16)).slice(-2);
-  }
-
-  return string;
-}
-
 function bufferToString(buffer, format) {
   var string = null;
 
   switch (format) {
   case 'hex':
-    string = bufferToStringHex(buffer);
-    break;
   case 'base64':
-    string = buffer.toString('base64');
+    string = buffer.toString(format);
     break;
   default:
     string = buffer.toString();
