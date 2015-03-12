@@ -7,6 +7,8 @@
 ([a-z])-([a-z])	$1$2	# non-obvious => nonobvious
 
 n't$	nt	# don't => dont
+'ve$	ve	# should've shouldve
+^I'm$	Im	# I'm => Im
 
 ([^aeiou's])s$	$1	# books => book
 
