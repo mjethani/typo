@@ -1,6 +1,6 @@
 usage: typo <secret> [--file=<file>] [--output-file=<output-file>]
             [--format=hex|base64] [--password[=<password>]] [--nosalt]
-            [--markup] [--deterministic] [--alternative]
+            [--markup] [--deterministic]
             [--ruleset-file=<ruleset-file>]
             [--verbose]
        typo --decode --original-file=<original-file>
@@ -64,13 +64,6 @@ These are the options:
       Do not use randomization in the encoding process.
 
       With this option set, the same input will always give the same output.
-
-  --alternative
-      Try alternative spellings.
-
-      For example, spell 'okay' as 'OK', and 'yes' as 'yeah'. Note that these
-      aren't spelling errors at all. This option makes it extremely difficult
-      to recover the secret.
 
   --ruleset-file=<ruleset-file>
       The ruleset file to use for typo generation.

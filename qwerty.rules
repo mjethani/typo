@@ -1,0 +1,67 @@
+# Copyright (c) 2015 Manish Jethani
+
+#
+# QWERTY typos.
+#
+
+###############
+# 1234567890-=
+# QWERTYUIOP[]\
+# ASDFGHJKL;'
+# ZXCVBNM,./
+###############
+
+# Insertions (aka "fat fingers")
+
+q	qw
+w	wq
+w	we
+e	ew
+e	er
+r	re
+r	rt
+t	tr
+t	ty
+y	yt
+y	yu
+u	uy
+u	ui
+i	iu
+i	io
+o	oi
+o	op
+p	po
+a	as
+s	sa
+s	sd
+d	ds
+d	df
+f	fd
+f	fg
+g	gf
+g	gh
+h	hg
+h	hj
+j	jh
+j	jk
+k	kj
+k	kl
+l	lk
+z	zx
+x	xz
+x	xc
+c	cx
+c	cv
+v	vc
+v	vb
+b	bv
+b	bn
+n	nb
+n	nm
+m	mn
+
+# TODO: Include substitutions (wrong key), deletions, and common transpositions
+
+# TODO: Weight rules according to real-world probabilities
+
+# vim: ts=16

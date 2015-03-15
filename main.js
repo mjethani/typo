@@ -25,7 +25,7 @@ var pkg      = require('./package');
 var _name = 'typo';
 
 var rules = {};
-var rulesetOrder = 'typo spelling grammatical'.split(' ');
+var rulesetOrder = 'qwerty'.split(' ');
 
 var wordCharacter = /[A-Za-z'-]/;
 
@@ -799,7 +799,6 @@ function run() {
     'nosalt':         false,
     'markup':         false,
     'deterministic':  false,
-    'alternative':    false,
     'ruleset-file':   null,
     'verbose':        false,
   };
@@ -931,10 +930,6 @@ function run() {
             loadRulesetFile(rulesetFile, 'custom');
 
           } else {
-            if (options.alternative) {
-              rulesetOrder.push('alternative');
-            }
-
             rulesetOrder.forEach(loadRules);
           }
 
