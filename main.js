@@ -24,8 +24,10 @@ var pkg      = require('./package');
 
 var _name = 'typo';
 
+var dict = {};
+
 var rules = {};
-var rulesetOrder = 'qwerty'.split(' ');
+var rulesetOrder = 'qwerty misspelling grammatical'.split(' ');
 
 var wordCharacter = /[A-Za-z'-]/;
 
@@ -411,6 +413,28 @@ function printUsage() {
   dumpFile(path.join(__dirname, 'default.help'), tee);
 }
 
+function loadDict() {
+  say('Loading dictionary');
+
+  var data = slurpFileSync(path.join(__dirname, 'dict'));
+  var lines = data.toString().split('\n');
+
+  lines.forEach(function (word) {
+    var seq = [
+      '^' + word.slice(0, 2),
+      word.slice(word.length - 2) + '$'
+    ];
+
+    for (var i = 0; i < word.length - 2; i++) {
+      seq.push(word.slice(i, i + 3));
+    }
+
+    seq.forEach(function (v) {
+      dict[v] = dict[v] + 1 || 1;
+    });
+  });
+}
+
 function loadRulesetFile(filename, name) {
   var data = slurpFileSync(filename);
   var records = parseTabularData(data);
@@ -461,6 +485,19 @@ function readInputText(filename, callback) {
   }
 }
 
+function checkPlausibility(typo) {
+  var score = 0;
+
+  score += dict['^' + typo.slice(0, 2)] && 1 || 0;
+  score += dict[typo.slice(typo.length - 2) + '$'] && 1 || 0;
+
+  for (var i = 0; i < typo.length - 2; i++) {
+    score += dict[typo.slice(i, i + 3)] && 1 || 0;
+  }
+
+  return score / typo.length >= 1;
+}
+
 function generateTypos(word) {
   // Here we generate a bunch of typos for a given word.
   var arr = [];
@@ -472,12 +509,15 @@ function generateTypos(word) {
     rulesetOrder.forEach(function (name) {
       if (rules.hasOwnProperty(name)) {
         rules[name].forEach(function (rule) {
-          arr.push(word.replace(rule.re, rule.sub));
+          var typo = word.replace(rule.re, rule.sub);
+          if (typo !== word) {
+            if (name !== 'qwerty' || checkPlausibility(typo)) {
+              arr.push(typo);
+            }
+          }
         });
       }
     });
-
-    arr = arr.filter(function (v) { return v !== word; });
   }
 
   return unique(arr);
@@ -920,6 +960,8 @@ function run() {
 
       function (password, text, originalText, callback) {
         if (!options.decode) {
+          loadDict();
+
           // Load rulesets.
           var rulesetFile = options['ruleset-file'];
           if (rulesetFile) {
