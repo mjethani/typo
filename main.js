@@ -839,6 +839,7 @@ function run() {
     'nosalt':         false,
     'markup':         false,
     'deterministic':  false,
+    'rulesets':       null,
     'ruleset-file':   null,
     'verbose':        false,
   };
@@ -963,7 +964,9 @@ function run() {
           loadDict();
 
           // Load rulesets.
+          var rulesets = options['rulesets'];
           var rulesetFile = options['ruleset-file'];
+
           if (rulesetFile) {
             rulesetOrder.push('custom');
 
@@ -972,6 +975,10 @@ function run() {
             loadRulesetFile(rulesetFile, 'custom');
 
           } else {
+            if (rulesets != null) {
+              rulesetOrder = rulesets.match(/([^ ,]+)/g) || [];
+            }
+
             rulesetOrder.forEach(loadRules);
           }
 
