@@ -1,4 +1,4 @@
-##### Version 0.2.3
+##### Version 0.2.4
 
 This is a tool for typo-based text steganography. It lets you hide secret
 information in typographical errors.
