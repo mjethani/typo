@@ -4,8 +4,10 @@
   "description": "Hide secret information in typographical errors",
   "author": {
     "name": "Manish Jethani",
-    "email": "manish.jethani@gmail.com"
+    "email": "manish.jethani@gmail.com",
+    "url": "http://manishjethani.com/"
   },
+  "homepage": "http://mjethani.github.io/typo",
   "bin": {
     "typo": "./typo"
   },
@@ -19,6 +21,8 @@
     "type": "git",
     "url": "https://github.com/mjethani/typo.git"
   },
+  "engines": { "node": ">=0.12.0" },
+  "dependencies": {},
   "bugs": {
     "url": "https://github.com/mjethani/typo/issues",
     "email": "manish.jethani+typo@gmail.com"
