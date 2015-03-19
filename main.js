@@ -364,6 +364,21 @@ function deriveKey(text, password, length) {
 }
 
 function encrypt(buffer, text, password) {
+  // IMPORTANT NOTE
+  // 
+  // There are two problems here: (1) no message integrity; (2) key reuse
+  // attack.
+  // 
+  // Both of these are outside the scope of this program.
+  // 
+  // The first one can be addressed by digitally signing the stegotext
+  // (e.g. PGP-signed email or Bitcoin transaction), or by including a MAC with
+  // the message.
+  // 
+  // For the second one, it would be nice to be able to come up with a better
+  // scheme, but for now it'll require user education. Never reuse the same
+  // combination of password and covertext.
+
   var key = deriveKey(text, password, 48);
   var cipher = crypto.createCipheriv('aes-256-ctr', key.slice(0, 32),
       key.slice(32));
