@@ -1,11 +1,13 @@
 usage: typo <secret> [--file=<file>] [--output-file=<output-file>]
-            [--format=hex|base64] [--password[=<password>]] [--nosalt]
+            [--format=hex|base64] [--password[=<password>]]
+            [--authenticated] [--nosalt]
             [--markup] [--deterministic]
             [--rulesets=<ruleset>[,...]] [--ruleset-file=<ruleset-file>]
             [--verbose]
        typo --decode --original-file=<original-file>
             [--file=<file>] [--output-file=<output-file>]
-            [--format=hex|base64] [--password[=<password>]] [--nosalt]
+            [--format=hex|base64] [--password[=<password>]]
+            [--authenticated] [--nosalt]
             [--markup]
             [--verbose]
        typo --help
@@ -39,6 +41,11 @@ These are the options:
   --password[=<password>], -P
       The password used for encrypting the secret before encoding or for
       decrypting the secret after decoding.
+
+  --authenticated, -a
+      Use authenticated encryption.
+
+      This uses GCM mode.
 
   --nosalt
       Do not use any salt for encryption.
