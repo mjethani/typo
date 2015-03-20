@@ -183,6 +183,10 @@ function parseArgs(args) {
   }, Object.create(defaultOptions));
 }
 
+function prettyBuffer(buffer) {
+  return (buffer.toString('hex').toUpperCase().match(/.{2}/g) || []).join(' ');
+}
+
 function hash(message, algorithm) {
   return crypto.Hash(algorithm || 'md5').update(message).digest();
 }
@@ -661,11 +665,10 @@ function encode(text, secret, format, password, nosalt, markup,
   var buffer = encrypt(stringToBuffer(secret, format), !nosalt && text || '',
       password, salt);
 
-  say('Encrypted secret:', buffer.toString('hex').toUpperCase()
-      .match(/.{2}/g).join(' '));
+  say('Encrypted secret:', prettyBuffer(buffer));
 
   if (salt) {
-    say('Salt:', salt.toString('hex').toUpperCase().match(/.{2}/g).join(' '));
+    say('Salt:', prettyBuffer(salt));
 
     buffer = Buffer.concat([ salt, buffer ]);
   }
@@ -833,13 +836,12 @@ function decode(text, originalText, format, password, nosalt) {
   if (!nosalt) {
     salt = buffer.slice(0, 2);
 
-    say('Salt:', salt.toString('hex').toUpperCase().match(/.{2}/g).join(' '));
+    say('Salt:', prettyBuffer(salt));
 
     buffer = buffer.slice(2);
   }
 
-  say('Encrypted secret:', buffer.toString('hex').toUpperCase()
-      .match(/.{2}/g).join(' '));
+  say('Encrypted secret:', prettyBuffer(buffer));
 
   say('Decrypting ...');
 
