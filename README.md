@@ -1,6 +1,6 @@
 ##### Version 0.3.0
 
-![Screenshot](red-sands.png)
+![Screenshot](screenshot.png)
 
 This is a tool for typo-based text steganography. It lets you hide secret
 information in typographical errors.
