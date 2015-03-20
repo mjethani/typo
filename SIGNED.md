@@ -4,19 +4,19 @@
 Version: GnuPG/MacGPG2 v2.0.22 (Darwin)
 Comment: GPGTools - https://gpgtools.org
 
-iQIcBAABCgAGBQJVCv8HAAoJEPvclVzmt0MDQ8IP/3qr0/LWJ6WDpg/n/tCW2LrQ
-5WDk2Exg1F7t8KMZeKFiFxByqggjwn+4YhEmL8JrjAC9hYaEVfSgynvXEXZvotHS
-livvd8jbX+zjWdkgL2SI+HAIggLAf3tQQjE/Vej8SReJW510Vf2YQQJsQg2WgvYC
-xfWhtA7oFNDqklTVorfHmJbWSkJhWM+d0z+Bp+KhKH3ufFiUrfxRVE5jtbxFeFjJ
-SK0hJToc6FKZz6tRocHM6ZQXkPQhoox6zfqpiqWgfZqcmA14zL7irOKhwhyYkA5E
-xwtUF4Lk9OPaLRfvKzzO5JlOCohkiXb35I3Q+ejqY6y5PGRwkWTbmxSnhDSRmN0n
-Re5qkBnTtlpXw2vf+LKoyKmZZivy6+ErUIlxDoj/5q0/2Bq0enr1IkLH6IjpFCDy
-9rxRzt5FjNycGlOoa+BNXco8qOYy6LOGnHWVf+rvvMK6/ZvLBI62+NXUdw2IZRXl
-A4pv0Ywe18J7JXIzyEH+j43/wxqnAP0hDYaMcqVO1G1ppZiwKwb5m7o4hg6KtDoZ
-RPxVzLQ1uSyMIryLUoJBXryOJtqG3SqvIZx8Hu9pMNGSoG28PZwYLUW3TD9Ayv1R
-vmpcWQYduv+VDBatLPidRYFao03qLecZo42pveoQ9NSz40d4Df6O1VL0Z/UJDoeC
-mP/37T7reTKEMRKKWi4c
-=zWt1
+iQIcBAABCgAGBQJVDDeYAAoJEPvclVzmt0MDqEwQAOTDuRpfQpkxkqGVkMsR9kka
+0+IRrCiNq1oMQAeW6DRJnuYXUOap6h08ysTHOq73KjlZDdUeLit2ledNIVtXL6um
+N74UZPAY3l+fNhrVYamWoogiDqZ+GxgRBGXNjaVeLA8Eo4lby/637iTO4Y7ZcxHW
+2H0kgOLtDdxqSg1Bxb2jK4Kh3/LIWUd7R6R7kflmrqQtKeRSqD8LEQ8mnyxm3DxG
+b819sbDUeS5+KtpOl0dJXlL85oxMksAM049kM9reCkDYtn5eo0yfmjfnIMhTBoGI
+HcIPKosaLcaSdoDAiYhKjFg2I1ybpOn01HohdipA7RHAyv/YIUAlYeXbMAegxHjw
+mSMWDSQMhk7nqvbNJCPwLF3pzxOK2buixYSCqnyqb5EhqyRSSo1Hi7pqFMCN5sVr
+4xTD/xkabLVMgzJb+DnaGJ+Vr8bK0r1twPwy0Ow46AJ/8zApS6yDrMtK6wx1rsFp
+zjY/nWZIs2esY6mP/oLWAwMxy3ryz2GZNrcHjLYg7NqrHhL+koQd8cyuGYyDoZmd
+ken7QJ7cR7kKIKC0goVaIsTmsxmpGt1SPCquShWt9RTXXwzFml/gjKX6uw8cec59
+vMmjfk3uH+5Bcah7XJhq9ACigEjzUcoo03ZeJz9o/BJyn1htd8JgfvKTzoZq0r+O
+CwR+nggkWJpxX2Fk7y7x
+=K+k3
 -----END PGP SIGNATURE-----
 
 ```
@@ -32,17 +32,17 @@ size   exec  file                 contents
              ./                                                                                                                                                    
 14             .gitignore         227db518858edeb0c6428134d2b802bd357e1a5793c337aa2766eda272de46ba                                                                 
 732            LICENSE            e7fa0c5707aa3eae23e841a73ea57cda21f3bd87b90ba3ea254ca5bdec29d386                                                                 
-1185           README.md          8882340d0c549fc1393ac77c8cf635eaccfb3a08ef1f5bf2864873a0c9bdb2bd                                                                 
+1185           README.md          c5ec85afdbbf0aaeb3ee9cdf525af898a0fe2dd7a8d05d4f46b2b7c229ceb3b6                                                                 
 160            alternative.rules  647357965690f76f4e5608d51e24b5ee3f6711bde31967e017eb51840dd87821                                                                 
 3850           default.help       9cb2beadc2adb47bcf4989dac499c10040becca8efe30501ee5b20bc52b258ba                                                                 
 14310          dict               c68088ec46bb71d60447e956c4bdf1c3801c97791786fdd45522bb5e8a253163                                                                 
 921            grammatical.rules  0823880f62bd7f2372efd2f43bc36ddb4d2d6919f892e7520e1ee8f9b443400c                                                                 
 56             keyboard           c8431394f7812b8022fdcd86bd359056a26e538fac4446ab1e908753e1fa1a89                                                                 
-25490          main.js            59822b02779273328e5e4269c8b94239e9d421c510f90bf72176ebb07de6b07d                                                                 
+26101          main.js            fef17fb0bf9f4c5c18b35ead5e3953c363d7ac0dd9ec1c5af9d13031778e3307                                                                 
 44032          misspelling.rules  4bdbfbfe2abfabafae0f8af4c29e2d0a5d98a2bb9c234749dbbf62395b378862                                                                 
-722            package.json       3d6563103b8c0c0718ff8b78c9573d7899f434b65f4238739ca8d644627e7899                                                                 
+722            package.json       956edd8f368e850468415474843def91c8819eef5d24071ac30304cb2b42083a                                                                 
 12123          qwerty.rules       e84eb4c872606bc6f2a22332aa0415d20220c90391afa3d92300a0d38653a2ef                                                                 
-54930          red-sands.png      93dc8c1a462541972f921ef590da9d4a73a5ab007a59ee78557c39fb5e9d47f9|90fc63a22d397a7bf6d7afa453adb74fed15c486c8a2cce3eb75149e3ff87a78
+61515          red-sands.png      cd31f1c1e9f54a4c865efe0dd8548ad6ba64f4f42dfa41939f583ffad0d402a6|42fadc018440f9cdcd05d8d54401fadd8d71c2db5d2fcfdd891449a6c4b93d3d
 47     x       typo               ad1d918f07b08400ddd47b71001b6ee4928c5f6bbe50ddb75cb1d024d47dcfbe                                                                 
 ```
 
