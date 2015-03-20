@@ -7,7 +7,7 @@ information in typographical errors.
 
 ### Background
 
-__Why steganography?__
+Why steganography?
 
 Because [this][2].
 
