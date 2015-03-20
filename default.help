@@ -96,10 +96,10 @@ These are the options:
 
 Examples:
 
-  (1)   typo '4pm Pier39' --file=email.txt > email-typo.txt
+  (1)   typo '4pm Pier39' --file=email.txt > email.typo.txt
 
       Hide the message '4pm Pier39' in the text of email.txt by introducing
-      typographical errors, and save the output to email-typo.txt.
+      typographical errors, and save the output to email.typo.txt.
 
   (2)   typo 57F8965374611F9CEEF9578BFBDC955CE6B74303 --format=hex < hello.txt
 
