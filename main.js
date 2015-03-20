@@ -369,27 +369,37 @@ function deriveKey(text, password, salt, length) {
       length, 'sha256');
 }
 
-function encrypt(buffer, text, password, salt) {
-  // IMPORTANT NOTE
-  // 
-  // There's a problem here: no message integrity.
-  // 
-  // This is outside the scope of this program.
-  // 
-  // It can be addressed by digitally signing the stegotext
-  // (e.g. PGP-signed email or Bitcoin transaction), or by including a MAC with
-  // the message.
-
-  var key = deriveKey(text, password, salt, 48);
-  var cipher = crypto.createCipheriv('aes-256-ctr', key.slice(0, 32),
+function encrypt(buffer, text, password, salt, authenticated) {
+  var keyLength = 48;
+  var algorithm = 'aes-256-ctr';
+  if (authenticated) {
+    keyLength = 44;
+    algorithm = 'aes-256-gcm';
+  }
+  var key = deriveKey(text, password, salt, keyLength);
+  var cipher = crypto.createCipheriv(algorithm, key.slice(0, 32),
       key.slice(32));
-  return Buffer.concat([ cipher.update(buffer), cipher.final() ]);
+  var result = Buffer.concat([ cipher.update(buffer), cipher.final() ]);
+  if (authenticated) {
+    result = Buffer.concat([ result, cipher.getAuthTag() ]);
+  }
+  return result;
 }
 
-function decrypt(buffer, text, password, salt) {
-  var key = deriveKey(text, password, salt, 48);
-  var decipher = crypto.createDecipheriv('aes-256-ctr', key.slice(0, 32),
+function decrypt(buffer, text, password, salt, authenticated) {
+  var keyLength = 48;
+  var algorithm = 'aes-256-ctr';
+  if (authenticated) {
+    keyLength = 44;
+    algorithm = 'aes-256-gcm';
+  }
+  var key = deriveKey(text, password, salt, keyLength);
+  var decipher = crypto.createDecipheriv(algorithm, key.slice(0, 32),
       key.slice(32));
+  if (authenticated) {
+    decipher.setAuthTag(buffer.slice(-16));
+    buffer = buffer.slice(0, -16);
+  }
   return Buffer.concat([ decipher.update(buffer), decipher.final() ]);
 }
 
@@ -648,8 +658,8 @@ function extractTyposFromMarkup(text) {
   };
 }
 
-function encode(text, secret, format, password, nosalt, markup,
-    deterministic) {
+function encode(text, secret, format, password, authenticated, nosalt,
+    markup, deterministic) {
   var result = null;
 
   say('Encrypting ...');
@@ -663,7 +673,7 @@ function encode(text, secret, format, password, nosalt, markup,
   // used as the salt to PBKDF2. If '--nosalt' is used, an empty string is used
   // as the salt. Also, if password is null, an empty password is used anyway.
   var buffer = encrypt(stringToBuffer(secret, format), !nosalt && text || '',
-      password, salt);
+      password, salt, authenticated);
 
   say('Encrypted secret:', prettyBuffer(buffer));
 
@@ -792,7 +802,7 @@ function encode(text, secret, format, password, nosalt, markup,
   return result;
 }
 
-function decode(text, originalText, format, password, nosalt) {
+function decode(text, originalText, format, password, authenticated, nosalt) {
   var buffer = null;
 
   var extractInfo = null;
@@ -847,7 +857,7 @@ function decode(text, originalText, format, password, nosalt) {
 
   // Finally, decrypt the buffer to get the original secret.
   return bufferToString(decrypt(buffer, !nosalt && extractInfo.text || '',
-        password, salt), format);
+        password, salt, authenticated), format);
 }
 
 function run() {
@@ -868,6 +878,7 @@ function run() {
     'original-file':  null,
     'format':         null,
     'password':       false,
+    'authenticated':  false,
     'nosalt':         false,
     'markup':         false,
     'deterministic':  false,
@@ -886,6 +897,7 @@ function run() {
     '-o': '--output-file=',
     '-g': '--original-file=',
     '-P': '--password',
+    '-a': '--authenticated',
   };
 
   var options = parseArgs(process.argv.slice(2), defaultOptions, shortcuts,
@@ -1031,7 +1043,7 @@ function run() {
           say('Decoding');
 
           secret = decode(text, originalText, options.format, password,
-              options.nosalt);
+              options.authenticated, options.nosalt);
 
           say('Secret: ' + secret);
 
@@ -1057,7 +1069,8 @@ function run() {
         say('Encoding');
 
         var output = encode(text, options.secret, options.format, password,
-            options.nosalt, options.markup, options.deterministic);
+            options.authenticated, options.nosalt,
+            options.markup, options.deterministic);
 
         if (!output) {
           throw '';
