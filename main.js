@@ -358,35 +358,32 @@ function prompt(label, quiet, callback) {
   });
 }
 
-function deriveKey(text, password, length) {
-  return crypto.pbkdf2Sync(password || '', hash(text, 'sha256'), 0x100000,
+function deriveKey(text, password, salt, length) {
+  return crypto.pbkdf2Sync(password || '',
+      Buffer.concat([ hash(text, 'sha256'), salt || new Buffer(0) ]),
+      0x100000,
       length, 'sha256');
 }
 
-function encrypt(buffer, text, password) {
+function encrypt(buffer, text, password, salt) {
   // IMPORTANT NOTE
   // 
-  // There are two problems here: (1) no message integrity; (2) key reuse
-  // attack.
+  // There's a problem here: no message integrity.
   // 
-  // Both of these are outside the scope of this program.
+  // This is outside the scope of this program.
   // 
-  // The first one can be addressed by digitally signing the stegotext
+  // It can be addressed by digitally signing the stegotext
   // (e.g. PGP-signed email or Bitcoin transaction), or by including a MAC with
   // the message.
-  // 
-  // For the second one, it would be nice to be able to come up with a better
-  // scheme, but for now it'll require user education. Never reuse the same
-  // combination of password and covertext.
 
-  var key = deriveKey(text, password, 48);
+  var key = deriveKey(text, password, salt, 48);
   var cipher = crypto.createCipheriv('aes-256-ctr', key.slice(0, 32),
       key.slice(32));
   return Buffer.concat([ cipher.update(buffer), cipher.final() ]);
 }
 
-function decrypt(buffer, text, password) {
-  var key = deriveKey(text, password, 48);
+function decrypt(buffer, text, password, salt) {
+  var key = deriveKey(text, password, salt, 48);
   var decipher = crypto.createDecipheriv('aes-256-ctr', key.slice(0, 32),
       key.slice(32));
   return Buffer.concat([ decipher.update(buffer), decipher.final() ]);
@@ -653,17 +650,25 @@ function encode(text, secret, format, password, nosalt, markup,
 
   say('Encrypting ...');
 
+  var salt = !deterministic && !nosalt ? crypto.randomBytes(2) : null;
+
   // Convert the string into a buffer and encrypt the buffer using the given
-  // password and the text.
+  // password, the text, and the random salt.
   // 
-  // Note: The SHA-256 of the original text is used as the salt to PBKDF2. If
-  // '--nosalt' is used, an empty string is used in place of the text. Also, if
-  // password is null, an empty password is used anyway.
+  // Note: The SHA-256 of the original text along with a random two bytes is
+  // used as the salt to PBKDF2. If '--nosalt' is used, an empty string is used
+  // as the salt. Also, if password is null, an empty password is used anyway.
   var buffer = encrypt(stringToBuffer(secret, format), !nosalt && text || '',
-      password);
+      password, salt);
 
   say('Encrypted secret:', buffer.toString('hex').toUpperCase()
       .match(/.{2}/g).join(' '));
+
+  if (salt) {
+    say('Salt:', salt.toString('hex').toUpperCase().match(/.{2}/g).join(' '));
+
+    buffer = Buffer.concat([ salt, buffer ]);
+  }
 
   say('Buffer size: ' + buffer.length);
 
@@ -823,6 +828,16 @@ function decode(text, originalText, format, password, nosalt) {
     }
   }
 
+  var salt = null;
+
+  if (!nosalt) {
+    salt = buffer.slice(0, 2);
+
+    say('Salt:', salt.toString('hex').toUpperCase().match(/.{2}/g).join(' '));
+
+    buffer = buffer.slice(2);
+  }
+
   say('Encrypted secret:', buffer.toString('hex').toUpperCase()
       .match(/.{2}/g).join(' '));
 
@@ -830,7 +845,7 @@ function decode(text, originalText, format, password, nosalt) {
 
   // Finally, decrypt the buffer to get the original secret.
   return bufferToString(decrypt(buffer, !nosalt && extractInfo.text || '',
-        password), format);
+        password, salt), format);
 }
 
 function run() {
