@@ -34,9 +34,9 @@ Verify the installation:
 
 To encode a secret:
 
-    typo 'SECRET' -f message.txt -o message.typo.txt
+    typo 'key:7d46187e' -f message.txt -o message.typo.txt
 
-Where "SECRET" is the secret.
+Where "key:7d46187e" is the secret.
 
 To decode a secret:
 
