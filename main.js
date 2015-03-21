@@ -24,7 +24,7 @@ var pkg      = require('./package');
 
 var _name = 'typo';
 
-var dict = {};
+var dictionary = {};
 
 var rules = {};
 var rulesetOrder = 'qwerty misspelling grammatical'.split(' ');
@@ -439,10 +439,10 @@ function printUsage() {
   dumpFile(path.join(__dirname, 'default.help'), tee);
 }
 
-function loadDict() {
+function loadDictionary() {
   say('Loading dictionary');
 
-  var data = slurpFileSync(path.join(__dirname, 'dict'));
+  var data = slurpFileSync(path.join(__dirname, 'dictionary'));
   var lines = data.toString().split('\n');
 
   lines.forEach(function (word) {
@@ -456,7 +456,7 @@ function loadDict() {
     }
 
     seq.forEach(function (v) {
-      dict[v] = dict[v] + 1 || 1;
+      dictionary[v] = dictionary[v] + 1 || 1;
     });
   });
 }
@@ -514,11 +514,11 @@ function readInputText(filename, callback) {
 function checkPlausibility(typo) {
   var score = 0;
 
-  score += dict['^' + typo.slice(0, 2)] && 1 || 0;
-  score += dict[typo.slice(typo.length - 2) + '$'] && 1 || 0;
+  score += dictionary['^' + typo.slice(0, 2)] && 1 || 0;
+  score += dictionary[typo.slice(typo.length - 2) + '$'] && 1 || 0;
 
   for (var i = 0; i < typo.length - 2; i++) {
-    score += dict[typo.slice(i, i + 3)] && 1 || 0;
+    score += dictionary[typo.slice(i, i + 3)] && 1 || 0;
   }
 
   return score / typo.length >= 1;
@@ -1005,7 +1005,7 @@ function run() {
 
       function (password, text, originalText, callback) {
         if (!options.decode) {
-          loadDict();
+          loadDictionary();
 
           // Load rulesets.
           var rulesets = options['rulesets'];
