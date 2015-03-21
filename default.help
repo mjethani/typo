@@ -113,8 +113,8 @@ Examples:
 
   (4)   typo --format=base64 $(base64 heart.png) < love-letter.txt | pbcopy
 
-      Encode the contents of heart.png (image) into the text of love-letter.txt
-      and copy the result to the clipboard.
+      Encode the contents of heart.png into the text of love-letter.txt and
+      copy the result to the clipboard.
 
   (5)   typo --decode --original-file=top-secret.txt --password=0000 < file.txt
 
