@@ -241,6 +241,19 @@ function unique(array) {
   return set;
 }
 
+function trigrams(word) {
+  var seq = [
+    '^' + word.slice(0, 2),
+    word.slice(word.length - 2) + '$'
+  ];
+
+  for (var i = 0; i < word.length - 2; i++) {
+    seq.push(word.slice(i, i + 3));
+  }
+
+  return seq;
+}
+
 function parseTabularData(data) {
   if (data == null) {
     return null;
@@ -446,16 +459,7 @@ function loadDictionary() {
   var lines = data.toString().split('\n');
 
   lines.forEach(function (word) {
-    var seq = [
-      '^' + word.slice(0, 2),
-      word.slice(word.length - 2) + '$'
-    ];
-
-    for (var i = 0; i < word.length - 2; i++) {
-      seq.push(word.slice(i, i + 3));
-    }
-
-    seq.forEach(function (v) {
+    trigrams(word).forEach(function (v) {
       dictionary[v] = dictionary[v] + 1 || 1;
     });
   });
@@ -514,14 +518,9 @@ function readInputText(filename, callback) {
 function checkPlausibility(typo) {
   var score = 0;
 
-  typo = typo.toLowerCase();
-
-  score += dictionary['^' + typo.slice(0, 2)] && 1 || 0;
-  score += dictionary[typo.slice(typo.length - 2) + '$'] && 1 || 0;
-
-  for (var i = 0; i < typo.length - 2; i++) {
-    score += dictionary[typo.slice(i, i + 3)] && 1 || 0;
-  }
+  trigrams(typo.toLowerCase()).forEach(function (v) {
+    score += dictionary[v] && 1 || 0;
+  });
 
   return score / typo.length >= 1;
 }
