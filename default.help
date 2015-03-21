@@ -120,15 +120,16 @@ Examples:
 
       Extract top secret information from file.txt using the password '0000'.
 
-Links
-  Project home page
-    http://mjethani.github.io/typo
+LINKS
 
-  npm package
-    https://www.npmjs.com/package/typo-steganography
+Project home page
+http://mjethani.github.io/typo
 
-  Documentation & philosophy
-    https://blog.manishjethani.com/typo-steganography
+npm package
+https://www.npmjs.com/package/typo-steganography
+
+Documentation & philosophy
+https://blog.manishjethani.com/typo-steganography
 
 -- 
 Copyright (c) 2015 Manish Jethani
