@@ -1,0 +1,361 @@
+# Copyright (c) 2015 Manish Jethani
+
+#
+# Spelling variants.
+#
+
+# Source: http://en.wikipedia.org/wiki/Wikipedia:List_of_spelling_variants
+
+##################################################################
+# LICENSE
+#
+# This file is available under Creative Commons BY-SA 3.0 license.
+#
+# http://creativecommons.org/licenses/by-sa/3.0/
+##################################################################
+
+^([Aa])cknowledgement$	$1cknowledgment
+^([Aa])cknowledgment$	$1cknowledgement
+^([Aa])eroplane$	$1irplane
+^([Aa])irplane$	$1eroplane
+^([Aa])esthetic$	$1sthetic
+^([Ee])sthetic$	$1esthetic
+^([Aa])geing$	$1ging
+^([Aa])ging$	$1geing
+^([Aa])luminium$	$1luminum
+^([Aa])luminum$	$1luminium
+^([Aa])moeba$	$1meba
+^([Aa])meba$	$1moeba
+^([Aa])naemia$	$1nemia
+^([Aa])nemia$	$1naemia
+^([Aa])naesthesia$	$1nesthesia
+^([Aa])nesthesia$	$1naesthesia
+^([Aa])nalyse$	$1nalyze
+^([Aa])nalyze$	$1nalyse
+^([Aa])nalogue$	$1nalog
+^([Aa])nalog$	$1nalogue
+^([Aa])nnexe$	$1nnex
+^([Aa])nnex$	$1nnexe
+^([Aa])pologise$	$1pologize
+^([Aa])pologize$	$1pologise
+^([Aa])rchaeology$	$1rcheology
+^([Aa])rcheology$	$1rchaeology
+^([Aa])rmour$	$1rmor
+^([Aa])rmor$	$1rmour
+^([Aa])rse$	$1ss
+^([Aa])ss$	$1rse
+^([Aa])rtefact$	$1rtifact
+^([Aa])rtifact$	$1rtefact
+^([Aa])uthorise$	$1uthorize
+^([Aa])uthorize$	$1uthorise
+^([Aa])xe$	$1x
+^([Aa])x$	$1xe
+
+^([Bb])ehaviour$	$1ehavior
+^([Bb])ehavior$	$1ehaviour
+^([Bb])roncho$	$1ronco
+^([Bb])ronco$	$1roncho
+
+^([Cc])aesium$	$1esium
+^([Cc])esium$	$1aesium
+^([Cc])hamomile$	$1amomile
+^([Cc])amomile$	$1hamomile
+^([Cc])ancelled$	$1anceled
+^([Cc])anceled$	$1ancelled
+^([Cc])arburettor$	$1arburetor
+^([Cc])arburetor$	$1arburettor
+^([Cc])atalogue$	$1atalog
+^([Cc])atalog$	$1atalogue
+^([Cc])entre$	$1enter
+^([Cc])enter$	$1entre
+^([Cc])heque$	$1heck
+^([Cc])heck$	$1heque
+^([Cc])hequer$	$1hecker
+^([Cc])hecker$	$1hequer
+^([Cc])ypher$	$1ipher
+^([Cc])ipher$	$1ypher
+^([Cc])ivilise$	$1ivilize
+^([Cc])ivilize$	$1ivilise
+^([Cc])olonise$	$1olonize
+^([Cc])olonize$	$1olonise
+^([Cc])olonisation$	$1olonization
+^([Cc])olonization$	$1olonisation
+^([Cc])olour$	$1olor
+^([Cc])olor$	$1olour
+^([Cc])osy$	$1ozy
+^([Cc])ozy$	$1osy
+^([Cc])ounsellor$	$1ounselor
+^([Cc])ounselor$	$1ounsellor
+^([Cc])ounselling$	$1ounseling
+^([Cc])ounseling$	$1ounselling
+^([Cc])onnexion$	$1onnection
+^([Cc])onnection$	$1onnexion
+
+^([Dd])efence$	$1efense
+^([Dd])efense$	$1efence
+^([Dd])emagogue$	$1emagog
+^([Dd])emagog$	$1emagogue
+^([Dd])ialled$	$1ialed
+^([Dd])ialed$	$1ialled
+^([Dd])ialler$	$1ialer
+^([Dd])ialer$	$1ialler
+^([Dd])ialogue$	$1ialog
+^([Dd])ialog$	$1ialogue
+^([Dd])iarrhoea$	$1iarrhea
+^([Dd])iarrhea$	$1iarrhoea
+^([Dd])isc$	$1isk
+^([Dd])isk$	$1isc
+^([Dd])istil$	$1istill
+^([Dd])istill$	$1istil
+^([Dd])oughnut$	$1onut
+^([Dd])onut$	$1oughnut
+^([Dd])raught$	$1raft
+^([Dd])raft$	$1raught
+^([Dd])reamt$	$1reamed
+^([Dd])reamed$	$1reamt
+
+^([Ee])mphasise$	$1mphasize
+^([Ee])mphasize$	$1mphasise
+^([Ee])ncyclopaedia$	$1ncyclopedia
+^([Ee])ncyclopedia$	$1ncyclopaedia
+^([Ee])nrolment$	$1nrollment
+^([Ee])nrollment$	$1nrolment
+^([Ee])qualling$	$1qualing
+^([Ee])qualing$	$1qualling
+^([Ee])ndeavour$	$1ndeavor
+^([Ee])ndeavor$	$1ndeavour
+^([Ee])nquire$	$1nquire
+^([Ii])nquire$	$1nquire
+
+^([Ff])avourite$	$1avorite
+^([Ff])avorite$	$1avourite
+^([Ff])avour$	$1avor
+^([Ff])avor$	$1avour
+^([Ff])aeces$	$1eces
+^([Ff])eces$	$1aeces
+^([Ff])ibre$	$1iber
+^([Ff])iber$	$1ibre
+^([Ff])oetid$	$1etid
+^([Ff])etid$	$1oetid
+^([Ff])oetus$	$1etus
+^([Ff])etus$	$1oetus
+^([Ff])lautist$	$1lutist
+^([Ff])lutist$	$1lautist
+^([Ff])lavour$	$1lavor
+^([Ff])lavor$	$1lavour
+^([Ff])ulfil$	$1ulfill
+^([Ff])ulfill$	$1ulfil
+^([Ff])urore$	$1uror
+^([Ff])uror$	$1urore
+^([Ff])uelling$	$1ueling
+^([Ff])ueling$	$1uelling
+
+^([Gg])aol$	$1ail
+^([Jj])ail$	$1aol
+^([Gg])eneralise$	$1eneralize
+^([Gg])eneralize$	$1eneralise
+^([Gg])lycerine$	$1lycerin
+^([Gg])lycerin$	$1lycerine
+^([Gg])rey$	$1ray
+^([Gg])ray$	$1rey
+^([Gg])ynaecology$	$1ynecology
+^([Gg])ynecology$	$1ynaecology
+
+^([Hh])aemophilia$	$1emophilia
+^([Hh])emophilia$	$1aemophilia
+^([Hh])aematology$	$1ematology
+^([Hh])ematology$	$1aematology
+^([Hh])aem$	$1eme
+^([Hh])eme$	$1aem
+^([Hh])arbour$	$1arbor
+^([Hh])arbor$	$1arbour
+^([Hh])armonise$	$1armonize
+^([Hh])armonize$	$1armonise
+^([Hh])armonisation$	$1armonization
+^([Hh])armonization$	$1armonisation
+^([Hh])omologue$	$1omolog
+^([Hh])omolog$	$1omologue
+^([Hh])onour$	$1onor
+^([Hh])onor$	$1onour
+^([Hh])umour$	$1umor
+^([Hh])umor$	$1umour
+
+^([Ii])nstalment$	$1nstallment
+^([Ii])nstallment$	$1nstalment
+^([Ii])talicise$	$1talicize
+^([Ii])talicize$	$1talicise
+
+^([Jj])ewellery$	$1ewelry
+^([Jj])ewelry$	$1ewellery
+^([Jj])udgement$	$1udgment
+^([Jj])udgment$	$1udgement
+
+^([Kk])erb$	$1urb
+^([Cc])urb$	$1erb
+^([Kk])ilometre$	$1ilometer
+^([Kk])ilometer$	$1ilometre
+
+^([Ll])abour$	$1abor
+^([Ll])abor$	$1abour
+^([Ll])eapt$	$1eaped
+^([Ll])eaped$	$1eapt
+^([Ll])earnt$	$1earned
+^([Ll])earned$	$1earnt
+^([Ll])icence$	$1icense
+^([Ll])icense$	$1icence
+^([Ll])iquorice$	$1icorice
+^([Ll])icorice$	$1iquorice
+^([Ll])ight$	$1ite
+^([Ll])ite$	$1ight
+^([Ll])itre$	$1iter
+^([Ll])iter$	$1itre
+^([Ll])odgment$	$1odgement
+^([Ll])odgement$	$1odgment
+
+^([Mm])anoeuvre$	$1aneuver
+^([Mm])aneuver$	$1anoeuvre
+^([Mm])arvellous$	$1arvelous
+^([Mm])arvelous$	$1arvellous
+^([Mm])etre$	$1eter
+^([Mm])eter$	$1etre
+^([Mm])odelling$	$1odeling
+^([Mm])odeling$	$1odelling
+^([Mm])illiard$	$1illion
+^([Bb])illion$	$1illiard
+^([Mm])ould$	$1old
+^([Mm])old$	$1ould
+^([Mm])ollusc$	$1ollusk
+^([Mm])ollusk$	$1ollusc
+^([Mm])oult$	$1olt
+^([Mm])olt$	$1oult
+^([Mm])um$	$1om
+^([Mm])om$	$1um
+^([Mm])onologue$	$1onolog
+^([Mm])onolog$	$1onologue
+^([Mm])oustache$	$1ustache
+^([Mm])ustache$	$1oustache
+^([Mm])oisturiser$	$1oisturizer
+^([Mm])oisturizer$	$1oisturiser
+
+^([Nn])eighbour$	$1eighbor
+^([Nn])eighbor$	$1eighbour
+
+^([Oo])enology$	$1nology
+^([Ee])nology$	$1enology
+^([Oo])esophagus$	$1sophagus
+^([Ee])sophagus$	$1esophagus
+^([Oo])estrogen$	$1strogen
+^([Ee])strogen$	$1estrogen
+^([Oo])dour$	$1dor
+^([Oo])dor$	$1dour
+^([Oo])ffence$	$1ffense
+^([Oo])ffense$	$1ffence
+^([Oo])melette$	$1melet
+^([Oo])melet$	$1melette
+^([Oo])rganisation$	$1rganization
+^([Oo])rganization$	$1rganisation
+^([Oo])rthologue$	$1rtholog
+^([Oo])rtholog$	$1rthologue
+^([Oo])rthopaedic$	$1rthopedic
+^([Oo])rthopedic$	$1rthopaedic
+
+^([Pp])aediatric$	$1ediatric
+^([Pp])ediatric$	$1aediatric
+^([Pp])aedophile$	$1edophile
+^([Pp])edophile$	$1aedophile
+^([Pp])yjamas$	$1ajamas
+^([Pp])ajamas$	$1yjamas
+^([Pp])aralyse$	$1aralyze
+^([Pp])aralyze$	$1aralyse
+^([Pp])arlour$	$1arlor
+^([Pp])arlor$	$1arlour
+^([Pp])edagogue$	$1edagog
+^([Pp])edagog$	$1edagogue
+^([Pp])lough$	$1low
+^([Pp])low$	$1lough
+^([Pp])ractise$	$1ractice
+^([Pp])ractice$	$1ractise
+^([Pp])retence$	$1retense
+^([Pp])retense$	$1retence
+^([Pp])rise$	$1rize
+^([Pp])rize$	$1rise
+^([Pp])rogramme$	$1rogram
+^([Pp])rogram$	$1rogramme
+
+^([Qq])uarrelled$	$1uarreled
+^([Qq])uarreled$	$1uarrelled
+^([Qq])uarrelling$	$1uarreling
+^([Qq])uarreling$	$1uarrelling
+
+^([Rr])ealise$	$1ealize
+^([Rr])ealize$	$1ealise
+^([Rr])ealisation$	$1ealization
+^([Rr])ealization$	$1ealisation
+^([Rr])igour$	$1igor
+^([Rr])igor$	$1igour
+^([Rr])outeing$	$1outing
+^([Rr])outing$	$1outeing
+
+^([Ss])aviour$	$1avior
+^([Ss])avior$	$1aviour
+^([Ss])avoury$	$1avory
+^([Ss])avory$	$1avoury
+^([Ss])ceptic$	$1keptic
+^([Ss])keptic$	$1ceptic
+^([Ss])ignalling$	$1ignaling
+^([Ss])ignaling$	$1ignalling
+^([Ss])kilful$	$1killful
+^([Ss])killful$	$1kilful
+^([Ss])peciality$	$1pecialty
+^([Ss])pecialty$	$1peciality
+^([Ss])pelt$	$1pelled
+^([Ss])pelled$	$1pelt
+^([Ss])poilt$	$1poiled
+^([Ss])poiled$	$1poilt
+^([Ss])torey$	$1tory
+^([Ss])tory$	$1torey
+^([Ss])ulphur$	$1ulfur
+^([Ss])ulfur$	$1ulphur
+
+^([Tt])heatre$	$1heater
+^([Tt])heater$	$1heatre
+^([Tt])yre$	$1ire
+^([Tt])ire$	$1yre
+^([Tt])ranquillity$	$1ranquility
+^([Tt])ranquility$	$1ranquillity
+^([Tt])ravelled$	$1raveled
+^([Tt])raveled$	$1ravelled
+^([Tt])raveller$	$1raveler
+^([Tt])raveler$	$1raveller
+^([Tt])ravelling$	$1raveling
+^([Tt])raveling$	$1ravelling
+^([Tt])umour$	$1umor
+^([Tt])umor$	$1umour
+
+^([Uu])rbanisation$	$1rbanization
+^([Uu])rbanization$	$1rbanisation
+
+^([Vv])alour$	$1alor
+^([Vv])alor$	$1alour
+^([Vv])ampyre$	$1ampire
+^([Vv])ampire$	$1ampyre
+^([Vv])ender$	$1endor
+^([Vv])endor$	$1ender
+^([Vv])ice$	$1ise
+^([Vv])ise$	$1ice
+^([Vv])ictual$	$1ittle
+^([Vv])ittle$	$1ictual
+^([Vv])igour$	$1igor
+^([Vv])igor$	$1igour
+
+^([Ww])intery$	$1intry
+^([Ww])intry$	$1intery
+^([Ww])hisky$	$1hiskey
+^([Ww])hiskey$	$1hisky
+^([Ww])oollen$	$1oolen
+^([Ww])oolen$	$1oollen
+
+^([Yy])oghurt$	$1ogurt
+^([Yy])ogurt$	$1oghurt
+
+# vim: ts=16
