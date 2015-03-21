@@ -407,4 +407,33 @@
 ([^n])n([a-z])(?!\2)	$1$2n
 ([^m])m([a-z])(?!\2)	$1$2m
 
+# Shift typos (e.g. "THe")
+
+^([A-Z])q	$1Q
+^([A-Z])w	$1W
+^([A-Z])e	$1E
+^([A-Z])r	$1R
+^([A-Z])t	$1T
+^([A-Z])y	$1Y
+^([A-Z])u	$1U
+^([A-Z])i	$1I
+^([A-Z])o	$1O
+^([A-Z])p	$1P
+^([A-Z])a	$1A
+^([A-Z])s	$1S
+^([A-Z])d	$1D
+^([A-Z])f	$1F
+^([A-Z])g	$1G
+^([A-Z])h	$1H
+^([A-Z])j	$1J
+^([A-Z])k	$1K
+^([A-Z])l	$1L
+^([A-Z])z	$1Z
+^([A-Z])x	$1X
+^([A-Z])c	$1C
+^([A-Z])v	$1V
+^([A-Z])b	$1B
+^([A-Z])n	$1N
+^([A-Z])m	$1M
+
 # vim: ts=16

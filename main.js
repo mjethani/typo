@@ -514,6 +514,8 @@ function readInputText(filename, callback) {
 function checkPlausibility(typo) {
   var score = 0;
 
+  typo = typo.toLowerCase();
+
   score += dictionary['^' + typo.slice(0, 2)] && 1 || 0;
   score += dictionary[typo.slice(typo.length - 2) + '$'] && 1 || 0;
 
