@@ -990,11 +990,28 @@ function run() {
   }
 
   var decodeMode = options.decode;
-  var queryMode = options.hasOwnProperty('query');
+  var queryMode  = options.hasOwnProperty('query');
 
   var encodeMode = !decodeMode && !queryMode;
 
-  if (encodeMode + decodeMode + queryMode !== 1) {
+  var contains = function (arr, elem) { return arr.indexOf(elem) !== -1 };
+
+  var isEncodeOption = contains.bind(null,
+      'verbose secret file output-file format password authenticated nosalt'
+      + ' markup deterministic rulesets ruleset-file'
+      .split(' '));
+  var isDecodeOption = contains.bind(null,
+      'verbose decode file original-file format password authenticated nosalt'
+      + ' markup'
+      .split(' '));
+  var isQueryOption  = contains.bind(null,
+      'verbose query rulesets ruleset-file'
+      .split(' '));
+
+  if (encodeMode + decodeMode + queryMode !== 1
+      || (encodeMode && !Object.keys(options).every(isEncodeOption))
+      || (decodeMode && !Object.keys(options).every(isDecodeOption))
+      || (queryMode  && !Object.keys(options).every(isQueryOption))) {
     dieOnExit();
     printUsage();
     return;
