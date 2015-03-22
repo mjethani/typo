@@ -956,10 +956,14 @@ function run() {
     }
   }
 
-  if (options.secret === null && !options.decode
-      && options['...'].length > 0) {
-    options.secret = options['...'][0];
-  }
+  // Positional arguments.
+  (!options.decode ? [ 'secret', 'file' ] : [ 'file' ])
+    .forEach(function (name) {
+    var arg = options['...'].shift();
+    if (arg !== undefined && options[name] === null) {
+      options[name] = arg;
+    }
+  });
 
   if (typeof options.secret !== 'string' && !options.decode) {
     dieOnExit();
