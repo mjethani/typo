@@ -1176,7 +1176,9 @@ function run() {
       say('Almost done!');
 
       if (!encodeMode || !options['output-file'] && process.stdout.isTTY) {
-        console.log(finalResult);
+        if (finalResult) {
+          console.log(finalResult);
+        }
       } else {
         printOutput(finalResult, options['output-file']);
       }
