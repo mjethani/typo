@@ -249,6 +249,12 @@ function unique(array) {
   return set;
 }
 
+function sortBy(array, prop) {
+  return array.sort(function (a, b) {
+    return -(a[prop] < b[prop]) || +(a[prop] > b[prop]);
+  });
+}
+
 function trigrams(word) {
   var seq = [
     '^' + word.slice(0, 2),
@@ -487,8 +493,6 @@ function loadRulesetFile(filename, name) {
 }
 
 function loadRules(name) {
-  name = name || 'typo';
-
   if (rules.hasOwnProperty(name)) {
     return rules[name];
   }
@@ -498,17 +502,17 @@ function loadRules(name) {
   return loadRulesetFile(path.join(__dirname, name + '.rules'), name);
 }
 
-function loadRulesets(rulesets, rulesetFile) {
-  if (rulesetFile) {
+function loadRulesets(builtinRulesets, externalRulesetFile) {
+  if (externalRulesetFile) {
     rulesetOrder.push('custom');
 
-    say('Loading ruleset file ' + rulesetFile);
+    say('Loading ruleset file ' + externalRulesetFile);
 
-    loadRulesetFile(rulesetFile, 'custom');
+    loadRulesetFile(externalRulesetFile, 'custom');
 
   } else {
-    if (rulesets != null) {
-      rulesetOrder = rulesets.match(/([^ ,]+)/g) || [];
+    if (builtinRulesets != null) {
+      rulesetOrder = builtinRulesets.match(/([^ ,]+)/g) || [];
     }
 
     rulesetOrder.forEach(loadRules);
@@ -516,7 +520,7 @@ function loadRulesets(rulesets, rulesetFile) {
 }
 
 function shuffleRules(name) {
-  shuffle(rules[name || 'typo']);
+  shuffle(rules[name]);
 }
 
 function readPassword(password, callback) {
@@ -911,9 +915,7 @@ function handleQuery(options) {
   });
 
   // Sort by score.
-  data.sort(function (a, b) {
-    return -(a.score > b.score) || +(a.score < b.score);
-  });
+  sortBy(data, 'score').reverse();
 
   data.forEach(function (record) {
     console.log([
