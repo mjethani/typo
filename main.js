@@ -671,6 +671,10 @@ function encode(text, secret, format, password, authenticated, nosalt,
     markup, deterministic) {
   var result = null;
 
+  if (password) {
+    say('Password:', new Array(2 + Math.floor(Math.random() * 15)).join('*'));
+  }
+
   say('Encrypting ...');
 
   var salt = !deterministic && !nosalt ? crypto.randomBytes(2) : null;
@@ -861,6 +865,10 @@ function decode(text, originalText, format, password, authenticated, nosalt) {
   }
 
   say('Encrypted secret:', prettyBuffer(buffer));
+
+  if (password) {
+    say('Password:', new Array(2 + Math.floor(Math.random() * 15)).join('*'));
+  }
 
   say('Decrypting ...');
 
