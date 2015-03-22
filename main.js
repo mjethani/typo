@@ -898,12 +898,8 @@ function decode(text, originalText, format, password, authenticated, nosalt) {
         password, salt, authenticated), format);
 }
 
-function handleQuery(options) {
-  loadDictionary();
-
-  loadRulesets(options.rulesets, options['ruleset-file']);
-
-  var data = generateTypos(options.query || '').map(function (typo) {
+function query(q) {
+  var data = generateTypos(q || '').map(function (typo) {
     var value = mash(hash(typo)) & 0xF;
 
     var grams = trigrams(typo.toLowerCase());
@@ -917,13 +913,14 @@ function handleQuery(options) {
   // Sort by score.
   sortBy(data, 'score').reverse();
 
-  data.forEach(function (record) {
-    console.log([
+  return data.map(function (record) {
+    return [
       record.typo,
       record.value.toString(16).toUpperCase(),
       record.score.toFixed(4),
-    ].join('\t'));
-  });
+    ].join('\t');
+
+  }).join(os.EOL);
 }
 
 function run() {
@@ -992,6 +989,17 @@ function run() {
     return;
   }
 
+  var decodeMode = options.decode;
+  var queryMode = options.hasOwnProperty('query');
+
+  var encodeMode = !decodeMode && !queryMode;
+
+  if (encodeMode + decodeMode + queryMode !== 1) {
+    dieOnExit();
+    printUsage();
+    return;
+  }
+
   var seeHelp = os.EOL + os.EOL + "See '" + _name + " --help'."
       + os.EOL;
 
@@ -1015,12 +1023,8 @@ function run() {
     }
   }
 
-  if (options.hasOwnProperty('query')) {
-    return handleQuery(options);
-  }
-
   // Positional arguments.
-  (!options.decode ? [ 'secret', 'file' ] : [ 'file' ])
+  (encodeMode ? [ 'secret', 'file' ] : [ 'file' ])
     .forEach(function (name) {
     var arg = options['...'].shift();
     if (arg !== undefined && options[name] === null) {
@@ -1028,7 +1032,7 @@ function run() {
     }
   });
 
-  if (typeof options.secret !== 'string' && !options.decode) {
+  if (encodeMode && typeof options.secret !== 'string') {
     dieOnExit();
     printUsage();
     return;
@@ -1041,7 +1045,7 @@ function run() {
     }
   }
 
-  if (options.decode && !options['original-file'] && !options.markup) {
+  if (decodeMode && !options['original-file'] && !options.markup) {
     die("Required '--original-file' or '--markup' argument." + seeHelp);
   }
 
@@ -1064,13 +1068,18 @@ function run() {
       },
 
       function (password, callback) {
-        readInputText(options.file, function (error, text) {
-          callback(error, password, text);
-        });
+        if (encodeMode || decodeMode) {
+          readInputText(options.file, function (error, text) {
+            callback(error, password, text);
+          });
+
+        } else {
+          callback(null, password, null);
+        }
       },
 
       function (password, text, callback) {
-        if (options.decode && !options.markup) {
+        if (decodeMode && !options.markup) {
           // Read the original file.
           say('Reading original file ' + options['original-file']);
 
@@ -1084,12 +1093,12 @@ function run() {
       },
 
       function (password, text, originalText, callback) {
-        if (!options.decode) {
+        if (encodeMode || queryMode) {
           loadDictionary();
 
           loadRulesets(options.rulesets, options['ruleset-file']);
 
-          if (!options.deterministic) {
+          if (encodeMode && !options.deterministic) {
             say('Shuffling rules');
 
             rulesetOrder.forEach(shuffleRules);
@@ -1100,12 +1109,25 @@ function run() {
       },
 
       function (password, text, originalText, callback) {
-        var secret = null;
+        if (encodeMode) {
+          say('Secret: ' + options.secret);
 
-        if (options.decode) {
+          say('Encoding');
+
+          var output = encode(text, options.secret, options.format, password,
+              options.authenticated, options.nosalt,
+              options.markup, options.deterministic);
+
+          if (!output) {
+            throw '';
+          }
+
+          callback(null, output);
+
+        } else if (decodeMode) {
           say('Decoding');
 
-          secret = decode(text, originalText, options.format, password,
+          var secret = decode(text, originalText, options.format, password,
               options.authenticated, options.nosalt);
 
           say('Secret: ' + secret);
@@ -1116,30 +1138,12 @@ function run() {
             // Throw an empty string to exit quietly with a nonzero exit code.
             throw '';
           }
-        }
 
-        callback(null, password, text, originalText, secret);
-      },
-
-      function (password, text, originalText, secret, callback) {
-        if (options.decode) {
           callback(null, secret);
-          return;
+
+        } else if (queryMode) {
+          callback(null, query(options.query));
         }
-
-        say('Secret: ' + options.secret);
-
-        say('Encoding');
-
-        var output = encode(text, options.secret, options.format, password,
-            options.authenticated, options.nosalt,
-            options.markup, options.deterministic);
-
-        if (!output) {
-          throw '';
-        }
-
-        callback(null, output);
       }
     ],
 
@@ -1154,7 +1158,7 @@ function run() {
     function (finalResult) {
       say('Almost done!');
 
-      if (options.decode || !options['output-file'] && process.stdout.isTTY) {
+      if (!encodeMode || !options['output-file'] && process.stdout.isTTY) {
         console.log(finalResult);
       } else {
         printOutput(finalResult, options['output-file']);
