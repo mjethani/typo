@@ -146,6 +146,10 @@ function parseArgs(args) {
 
   var expect = null;
 
+  var obj = Object.create(defaultOptions);
+
+  obj = Object.defineProperty(obj, '...', { value: [] });
+
   return args.reduce(function (obj, arg) {
     var single = arg[0] === '-' && arg[1] !== '-';
 
@@ -174,13 +178,17 @@ function parseArgs(args) {
 
       } else if (rest.length > 0) {
         obj[rest.shift()] = arg;
+
+      } else {
+        obj['...'].push(arg);
       }
     }
 
     expect = null;
 
     return obj;
-  }, Object.create(defaultOptions));
+  },
+  obj);
 }
 
 function prettyBuffer(buffer) {
@@ -901,8 +909,7 @@ function run() {
     '-a': '--authenticated',
   };
 
-  var options = parseArgs(process.argv.slice(2), defaultOptions, shortcuts,
-      'secret');
+  var options = parseArgs(process.argv.slice(2), defaultOptions, shortcuts);
 
   if ((options.help || options.version || options.license)
       && Object.keys(options).length > 1) {
@@ -947,6 +954,11 @@ function run() {
       printUsage();
       return;
     }
+  }
+
+  if (options.secret === null && !options.decode
+      && options['...'].length > 0) {
+    options.secret = options['...'][0];
   }
 
   if (typeof options.secret !== 'string' && !options.decode) {
