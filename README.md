@@ -34,13 +34,13 @@ Verify the installation:
 
 To encode a secret:
 
-    typo 'SECRET' -f message.txt -o message.typo.txt
+    typo '1984' message.txt > message.typo.txt
 
-Where "SECRET" is the secret.
+Where "1984" is the secret.
 
 To decode a secret:
 
-    typo -d -f message.typo.txt -g message.txt
+    typo -d -g message.txt < message.typo.txt
 
 Where message.txt is the original file.
 
