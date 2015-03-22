@@ -1,10 +1,10 @@
 /*  ----------------------------------------------------------------------------
- *  typo v0.3.5
+ *  typo v0.3.6
  *  
  *  Hide secret information in typographical errors
  *  
  *  Author:  Manish Jethani (manish.jethani@gmail.com)
- *  Date:    March 22, 2015
+ *  Date:    March 23, 2015
  *  
  *  See 'typo --help'
  *  
