@@ -498,6 +498,23 @@ function loadRules(name) {
   return loadRulesetFile(path.join(__dirname, name + '.rules'), name);
 }
 
+function loadRulesets(rulesets, rulesetFile) {
+  if (rulesetFile) {
+    rulesetOrder.push('custom');
+
+    say('Loading ruleset file ' + rulesetFile);
+
+    loadRulesetFile(rulesetFile, 'custom');
+
+  } else {
+    if (rulesets != null) {
+      rulesetOrder = rulesets.match(/([^ ,]+)/g) || [];
+    }
+
+    rulesetOrder.forEach(loadRules);
+  }
+}
+
 function shuffleRules(name) {
   shuffle(rules[name || 'typo']);
 }
@@ -877,6 +894,36 @@ function decode(text, originalText, format, password, authenticated, nosalt) {
         password, salt, authenticated), format);
 }
 
+function handleQuery(options) {
+  loadDictionary();
+
+  loadRulesets(options.rulesets, options['ruleset-file']);
+
+  var data = generateTypos(options.query || '').map(function (typo) {
+    var value = mash(hash(typo)) & 0xF;
+
+    var grams = trigrams(typo.toLowerCase());
+    var score = grams.reduce(function (a, v) {
+      return a += dictionary[v] || 0;
+    }, 0) / grams.length;
+
+    return { typo: typo, value: value, score: score };
+  });
+
+  // Sort by score.
+  data.sort(function (a, b) {
+    return -(a.score > b.score) || +(a.score < b.score);
+  });
+
+  data.forEach(function (record) {
+    console.log([
+      record.typo,
+      record.value.toString(16).toUpperCase(),
+      record.score.toFixed(4),
+    ].join('\t'));
+  });
+}
+
 function run() {
   if (process.argv.length <= 2) {
     dieOnExit();
@@ -902,6 +949,7 @@ function run() {
     'rulesets':       null,
     'ruleset-file':   null,
     'verbose':        false,
+    'query':          null,
   };
 
   var shortcuts = {
@@ -915,6 +963,7 @@ function run() {
     '-g': '--original-file=',
     '-P': '--password',
     '-a': '--authenticated',
+    '-q': '--query=',
   };
 
   var options = parseArgs(process.argv.slice(2), defaultOptions, shortcuts);
@@ -962,6 +1011,10 @@ function run() {
       printUsage();
       return;
     }
+  }
+
+  if (options.hasOwnProperty('query')) {
+    return handleQuery(options);
   }
 
   // Positional arguments.
@@ -1032,24 +1085,7 @@ function run() {
         if (!options.decode) {
           loadDictionary();
 
-          // Load rulesets.
-          var rulesets = options['rulesets'];
-          var rulesetFile = options['ruleset-file'];
-
-          if (rulesetFile) {
-            rulesetOrder.push('custom');
-
-            say('Loading ruleset file ' + rulesetFile);
-
-            loadRulesetFile(rulesetFile, 'custom');
-
-          } else {
-            if (rulesets != null) {
-              rulesetOrder = rulesets.match(/([^ ,]+)/g) || [];
-            }
-
-            rulesetOrder.forEach(loadRules);
-          }
+          loadRulesets(options.rulesets, options['ruleset-file']);
 
           if (!options.deterministic) {
             say('Shuffling rules');
