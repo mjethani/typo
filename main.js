@@ -145,44 +145,56 @@ function parseArgs(args) {
   var shortcuts       = typeof rest[0] === 'object' && rest.shift() || {};
 
   var expect = null;
+  var stop = false;
 
   var obj = Object.create(defaultOptions);
 
   obj = Object.defineProperty(obj, '...', { value: [] });
 
   args = args.reduce(function (newArgs, arg) {
-    // Split '-xyz' into '-x', '-y', '-z'.
-    if (arg.length > 2 && arg[0] === '-' && arg[1] !== '-') {
-      arg = arg.slice(1).split('').map(function (v) { return '-' + v });
+    if (!stop) {
+      if (arg === '--') {
+        stop = true;
+
+      // Split '-xyz' into '-x', '-y', '-z'.
+      } else if (arg.length > 2 && arg[0] === '-' && arg[1] !== '-') {
+        arg = arg.slice(1).split('').map(function (v) { return '-' + v });
+      }
     }
 
     return newArgs.concat(arg);
   },
   []);
 
+  stop = false;
+
   return args.reduce(function (obj, arg) {
-    var single = arg[0] === '-' && arg[1] !== '-';
+    var single = !stop && arg[0] === '-' && arg[1] !== '-';
 
     if (!(single && !(arg = shortcuts[arg]))) {
-      if (arg.slice(0, 2) === '--') {
-        var eq = arg.indexOf('=');
+      if (!stop && arg.slice(0, 2) === '--') {
+        if (arg.length > 2) {
+          var eq = arg.indexOf('=');
 
-        if (eq === -1) {
-          eq = arg.length;
+          if (eq === -1) {
+            eq = arg.length;
+          }
+
+          var name  = arg.slice(2, eq);
+
+          if (single && eq === arg.length - 1) {
+            expect = name;
+
+            return obj;
+          }
+
+          obj[name] = typeof defaultOptions[name] === 'boolean'
+              && eq === arg.length
+              || arg.slice(eq + 1);
+
+        } else {
+          stop = true;
         }
-
-        var name  = arg.slice(2, eq);
-
-        if (single && eq === arg.length - 1) {
-          expect = name;
-
-          return obj;
-        }
-
-        obj[name] = typeof defaultOptions[name] === 'boolean'
-            && eq === arg.length
-            || arg.slice(eq + 1);
-
       } else if (expect) {
         obj[expect] = arg;
 
