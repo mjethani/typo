@@ -218,17 +218,7 @@ function prettyBuffer(buffer) {
 }
 
 function hash(message, algorithm) {
-  return crypto.Hash(algorithm || 'md5').update(message).digest();
-}
-
-function mash(digest) {
-  var d = 0;
-
-  for (var i = 0; i < digest.length; i++) {
-    d ^= digest[i];
-  }
-
-  return d;
+  return crypto.Hash(algorithm || 'sha256').update(message).digest();
 }
 
 function swap(obj, k1, k2) {
@@ -413,7 +403,7 @@ function prompt(label, quiet, callback) {
 
 function deriveKey(text, password, salt, length) {
   return crypto.pbkdf2Sync(password || '',
-      Buffer.concat([ hash(text, 'sha256'), salt || new Buffer(0) ]),
+      Buffer.concat([ hash(text), salt || new Buffer(0) ]),
       0x100000,
       length, 'sha256');
 }
@@ -450,6 +440,10 @@ function decrypt(buffer, text, password, salt, authenticated) {
     buffer = buffer.slice(0, -16);
   }
   return Buffer.concat([ decipher.update(buffer), decipher.final() ]);
+}
+
+function wordValue(word) {
+  return hash(word)[0] & 0xF;
 }
 
 function printVersion() {
@@ -615,7 +609,7 @@ function processWord(word, buffer, offset) {
   for (var i = 0; i < typos.length; i++) {
     var candidate = typos[i];
 
-    if ((mash(hash(candidate)) & 0xF) === nibble) {
+    if (wordValue(candidate) === nibble) {
       return candidate;
     }
   }
@@ -886,14 +880,14 @@ function decode(text, originalText, format, password, authenticated, nosalt) {
   say('Buffer size: ' + buffer.length);
 
   for (var i = 0; i < extractInfo.typos.length; i++) {
-    var d = mash(hash(extractInfo.typos[i]));
+    var d = wordValue(extractInfo.typos[i]);
 
     // Read the encrypted secret 4 bits at a time. The even ones are the low 4
     // bits, the odd ones are the high 4 bits.
     if (i % 2 === 0) {
-      buffer[i >>> 1] = d & 0xF;
+      buffer[i >>> 1] = d;
     } else {
-      buffer[i >>> 1] |= d << 4 & 0xF0;
+      buffer[i >>> 1] |= d << 4;
     }
   }
 
@@ -924,7 +918,7 @@ function query(q) {
   say('Generating typos');
 
   var data = generateTypos(q || '').map(function (typo) {
-    var value = mash(hash(typo)) & 0xF;
+    var value = wordValue(typo);
 
     var grams = trigrams(typo.toLowerCase());
     var score = grams.reduce(function (a, v) {
