@@ -64,8 +64,6 @@ function async(func) {
 }
 
 function chain(list, errorCallback, doneCallback) {
-  // Basically why I love JavaScript.
-
   // This function lets you chain function calls so the output of one is the
   // the input to the next. If any of them throws an error, it goes to the
   // error callback. Once the list has been exhausted, the final result goes to
@@ -151,6 +149,7 @@ function parseArgs(args) {
 
   obj = Object.defineProperty(obj, '...', { value: [] });
 
+  // Preprocessing.
   args = args.reduce(function (newArgs, arg) {
     if (!stop) {
       if (arg === '--') {
@@ -348,12 +347,14 @@ function slurpFileSync(filename) {
 }
 
 function dumpFile(filename, transformer) {
+  var out = process.stdout;
+
   if (transformer) {
-    transformer.pipe(process.stdout);
-    fs.createReadStream(filename, { encoding: 'utf8' }).pipe(transformer);
-  } else {
-    fs.createReadStream(filename, { encoding: 'utf8' }).pipe(process.stdout);
+    transformer.pipe(out);
+    out = transformer;
   }
+
+  fs.createReadStream(filename, { encoding: 'utf8' }).pipe(out);
 }
 
 function prompt(label, quiet, callback) {
@@ -407,34 +408,43 @@ function deriveKey(text, password, salt, length) {
 function encrypt(buffer, text, password, salt, authenticated) {
   var keyLength = 48;
   var algorithm = 'aes-256-ctr';
+
   if (authenticated) {
     keyLength = 44;
     algorithm = 'aes-256-gcm';
   }
+
   var key = deriveKey(text, password, salt, keyLength);
   var cipher = crypto.createCipheriv(algorithm, key.slice(0, 32),
       key.slice(32));
+
   var result = Buffer.concat([ cipher.update(buffer), cipher.final() ]);
+
   if (authenticated) {
     result = Buffer.concat([ result, cipher.getAuthTag() ]);
   }
+
   return result;
 }
 
 function decrypt(buffer, text, password, salt, authenticated) {
   var keyLength = 48;
   var algorithm = 'aes-256-ctr';
+
   if (authenticated) {
     keyLength = 44;
     algorithm = 'aes-256-gcm';
   }
+
   var key = deriveKey(text, password, salt, keyLength);
   var decipher = crypto.createDecipheriv(algorithm, key.slice(0, 32),
       key.slice(32));
+
   if (authenticated) {
     decipher.setAuthTag(buffer.slice(-16));
     buffer = buffer.slice(0, -16);
   }
+
   return Buffer.concat([ decipher.update(buffer), decipher.final() ]);
 }
 
@@ -456,26 +466,26 @@ function printLicense() {
 
 function printUsage() {
   var cut = false;
-  var tee = new stream.Transform({ decodeStrings: false });
-  tee._transform = function (chunk, encoding, callback) {
+  var x = new stream.Transform({ decodeStrings: false });
+  x._transform = function (chunk, encoding, callback) {
     if (!cut) {
-      var nlnl = chunk.indexOf('\n\n');
-      if (nlnl !== -1) {
+      var br = chunk.indexOf('\n\n');
+      if (br !== -1) {
         cut = true;
-        this.push(chunk.slice(0, nlnl));
+        this.push(chunk.slice(0, br));
       } else {
         this.push(chunk);
       }
       callback();
     }
   };
-  tee._flush = function (callback) {
+  x._flush = function (callback) {
     this.push(os.EOL + os.EOL + "See '" + _name + " --help'."
         + os.EOL + os.EOL);
     callback();
   };
 
-  dumpFile(path.join(__dirname, 'default.help'), tee);
+  dumpFile(path.join(__dirname, 'default.help'), x);
 }
 
 function loadDictionary() {
@@ -514,17 +524,17 @@ function loadRules(name) {
   return loadRulesetFile(path.join(__dirname, name + '.rules'), name);
 }
 
-function loadRulesets(builtinRulesets, externalRulesetFile) {
-  if (externalRulesetFile) {
+function loadRulesets(builtins, externalFile) {
+  if (externalFile) {
     rulesetOrder.push('custom');
 
-    say('Loading ruleset file ' + externalRulesetFile);
+    say('Loading ruleset file ' + externalFile);
 
-    loadRulesetFile(externalRulesetFile, 'custom');
+    loadRulesetFile(externalFile, 'custom');
 
   } else {
-    if (builtinRulesets != null) {
-      rulesetOrder = builtinRulesets.match(/([^ ,]+)/g) || [];
+    if (builtins != null) {
+      rulesetOrder = builtins.match(/([^ ,]+)/g) || [];
     }
 
     rulesetOrder.forEach(loadRules);
@@ -557,48 +567,44 @@ function readInputText(filename, callback) {
 }
 
 function checkPlausibility(typo) {
-  var score = 0;
-
-  trigrams(typo.toLowerCase()).forEach(function (v) {
-    score += dictionary[v] && 1 || 0;
-  });
-
-  return score / typo.length >= 1;
+  return trigrams(typo.toLowerCase()).reduce(function (a, v) {
+    return a + !!dictionary[v];
+  },
+  0) / typo.length >= 1;
 }
 
 function generateTypos(word) {
-  // Here we generate a bunch of typos for a given word.
-  var arr = [];
-
-  if (word.match(wordPattern)) {
-    // Apply each rule.
-
-    // WARNING: This is not resistant to statistical analysis.
-    rulesetOrder.forEach(function (name) {
-      if (rules.hasOwnProperty(name)) {
-        rules[name].forEach(function (rule) {
-          var typo = word.replace(rule.re, rule.sub);
-          if (typo !== word) {
-            if (name !== 'qwerty' || checkPlausibility(typo)) {
-              arr.push(typo);
-            }
-          }
-        });
-      }
-    });
+  if (!word.match(wordPattern)) {
+    return [];
   }
 
-  return unique(arr);
+  var typos = rulesetOrder.reduce(function (typos, name) {
+    if (!rules.hasOwnProperty(name)) {
+      // Ruleset not available.
+      return typos;
+    }
+
+    return typos.concat(
+        rules[name].map(function (rule) {
+          // Apply each rule.
+          return word.replace(rule.re, rule.sub);
+
+        }).filter(function (typo) {
+          return typo !== word
+              && (name !== 'qwerty'
+                // For QWERTY typos, filter out the 'implausible' ones.
+                || checkPlausibility(typo));
+        })
+    );
+  },
+  []);
+
+  return unique(typos);
 }
 
 function processWord(word, buffer, offset) {
   // Take only the low 4 bits.
   var nibble = 0xF & buffer[offset];
-
-  // Why only 4 bits?
-  // 
-  // It's easier to find a match for one (as you see below), and the remaining
-  // bits can be used for special purposes.
 
   generateTypos(word).some(function (candidate) {
     return wordValue(candidate) === nibble && (word = candidate, true);
