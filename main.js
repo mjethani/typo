@@ -150,6 +150,16 @@ function parseArgs(args) {
 
   obj = Object.defineProperty(obj, '...', { value: [] });
 
+  args = args.reduce(function (newArgs, arg) {
+    // Split '-xyz' into '-x', '-y', '-z'.
+    if (arg.length > 2 && arg[0] === '-' && arg[1] !== '-') {
+      arg = arg.slice(1).split('').map(function (v) { return '-' + v });
+    }
+
+    return newArgs.concat(arg);
+  },
+  []);
+
   return args.reduce(function (obj, arg) {
     var single = arg[0] === '-' && arg[1] !== '-';
 
