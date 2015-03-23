@@ -899,6 +899,8 @@ function decode(text, originalText, format, password, authenticated, nosalt) {
 }
 
 function query(q) {
+  say('Generating typos');
+
   var data = generateTypos(q || '').map(function (typo) {
     var value = mash(hash(typo)) & 0xF;
 
@@ -1159,6 +1161,8 @@ function run() {
           callback(null, secret);
 
         } else if (queryMode) {
+          say('Query: ' + options.query);
+
           callback(null, query(options.query));
         }
       }
