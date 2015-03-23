@@ -228,24 +228,6 @@ function shuffle(array) {
   return array.sort(function () { return Math.random() - .5 || 1 });
 }
 
-function unique(array) {
-  if (array == null) {
-    return array;
-  }
-
-  // Filter out duplicates while preserving order.
-  var obj = {};
-
-  return array.reduce(function (set, item) {
-    if (!obj.hasOwnProperty(item)) {
-      obj[item] = set.push(item);
-    }
-
-    return set;
-  },
-  []);
-}
-
 function sortBy(array, prop) {
   return array.sort(function (a, b) {
     return -(a[prop] < b[prop]) || +(a[prop] > b[prop]);
@@ -545,6 +527,15 @@ function shuffleRules(name) {
   shuffle(rules[name]);
 }
 
+function mapOptions(options, names, values) {
+  names.forEach(function (n) {
+    var v = values.shift();
+    if (v !== undefined && !options.hasOwnProperty(n)) {
+      options[n] = v;
+    }
+  });
+}
+
 function readPassword(password, callback) {
   if (password === true) {
     prompt('Password: ', true, callback);
@@ -580,28 +571,32 @@ function generateTypos(word) {
     return [];
   }
 
-  var typos = [];
+  var collection = [];
+
+  var book = {};
 
   rulesetOrder.forEach(function (name) {
     if (!rules.hasOwnProperty(name)) {
       return;
     }
 
-    typos = typos.concat(
-        rules[name].map(function (rule) {
-          // Apply each rule.
-          return word.replace(rule.re, rule.sub);
+    rules[name].forEach(function (rule) {
+      var mutation = word.replace(rule.re, rule.sub);
 
-        }).filter(function (typo) {
-          return typo !== word
-              && (name !== 'qwerty'
-                // For QWERTY typos, filter out the 'implausible' ones.
-                || checkPlausibility(typo));
-        })
-    );
+      if (mutation === word
+          || book.hasOwnProperty(mutation)
+          || (name === 'qwerty' && !checkPlausibility(mutation))
+          ) {
+        return;
+      }
+
+      collection.push(mutation);
+
+      book[mutation] = true;
+    });
   });
 
-  return unique(typos);
+  return collection;
 }
 
 function processWord(word, buffer, offset) {
@@ -1061,12 +1056,8 @@ function run() {
   }
 
   // Positional arguments.
-  (encodeMode ? [ 'secret', 'file' ] : [ 'file' ]).forEach(function (name) {
-    var arg = options['...'].shift();
-    if (arg !== undefined && options[name] === null) {
-      options[name] = arg;
-    }
-  });
+  mapOptions(options, encodeMode ? [ 'secret', 'file' ] : [ 'file' ],
+      options['...']);
 
   if (encodeMode && typeof options.secret !== 'string') {
     dieOnExit();
