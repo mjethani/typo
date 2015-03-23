@@ -347,14 +347,14 @@ function slurpFileSync(filename) {
 }
 
 function dumpFile(filename, transformer) {
-  var out = process.stdout;
+  var stream = process.stdout;
 
   if (transformer) {
-    transformer.pipe(out);
-    out = transformer;
+    transformer.pipe(stream);
+    stream = transformer;
   }
 
-  fs.createReadStream(filename, { encoding: 'utf8' }).pipe(out);
+  fs.createReadStream(filename, { encoding: 'utf8' }).pipe(stream);
 }
 
 function prompt(label, quiet, callback) {
@@ -501,7 +501,7 @@ function loadDictionary() {
   });
 }
 
-function loadRulesetFile(filename, name) {
+function loadRulesetFile(filename, alias) {
   var data = slurpFileSync(filename);
   var records = parseTabularData(data);
 
@@ -509,7 +509,7 @@ function loadRulesetFile(filename, name) {
     return { re: new RegExp(fields[0]), sub: fields[1] };
   });
 
-  rules[name || filename] = ruleset;
+  rules[alias || filename] = ruleset;
 
   return ruleset;
 }
@@ -524,17 +524,17 @@ function loadRules(name) {
   return loadRulesetFile(path.join(__dirname, name + '.rules'), name);
 }
 
-function loadRulesets(builtins, externalFile) {
-  if (externalFile) {
+function loadRulesets(spec, filename) {
+  if (filename) {
     rulesetOrder.push('custom');
 
-    say('Loading ruleset file ' + externalFile);
+    say('Loading ruleset file ' + filename);
 
-    loadRulesetFile(externalFile, 'custom');
+    loadRulesetFile(filename, 'custom');
 
   } else {
-    if (builtins != null) {
-      rulesetOrder = builtins.match(/([^ ,]+)/g) || [];
+    if (spec != null) {
+      rulesetOrder = spec.match(/([^ ,]+)/g) || [];
     }
 
     rulesetOrder.forEach(loadRules);
@@ -567,10 +567,12 @@ function readInputText(filename, callback) {
 }
 
 function checkPlausibility(typo) {
-  return trigrams(typo.toLowerCase()).reduce(function (a, v) {
+  var n = trigrams(typo.toLowerCase()).reduce(function (a, v) {
     return a + !!dictionary[v];
   },
-  0) / typo.length >= 1;
+  0);
+
+  return n / typo.length >= 1;
 }
 
 function generateTypos(word) {
@@ -578,13 +580,14 @@ function generateTypos(word) {
     return [];
   }
 
-  var typos = rulesetOrder.reduce(function (typos, name) {
+  var typos = [];
+
+  rulesetOrder.forEach(function (name) {
     if (!rules.hasOwnProperty(name)) {
-      // Ruleset not available.
-      return typos;
+      return;
     }
 
-    return typos.concat(
+    typos = typos.concat(
         rules[name].map(function (rule) {
           // Apply each rule.
           return word.replace(rule.re, rule.sub);
@@ -596,19 +599,23 @@ function generateTypos(word) {
                 || checkPlausibility(typo));
         })
     );
-  },
-  []);
+  });
 
   return unique(typos);
 }
 
 function processWord(word, buffer, offset) {
-  // Take only the low 4 bits.
   var nibble = 0xF & buffer[offset];
 
-  generateTypos(word).some(function (candidate) {
-    return wordValue(candidate) === nibble && (word = candidate, true);
-  });
+  var typos = generateTypos(word);
+
+  for (var i = 0; i < typos.length; i++) {
+    var candidate = typos[i];
+
+    if (wordValue(candidate) === nibble) {
+      return candidate;
+    }
+  }
 
   return word;
 }
@@ -917,9 +924,12 @@ function query(q) {
     var value = wordValue(typo);
 
     var grams = trigrams(typo.toLowerCase());
-    var score = grams.reduce(function (a, v) {
-      return a += dictionary[v] || 0;
-    }, 0) / grams.length;
+    var hits = grams.reduce(function (a, v) {
+      return a + (dictionary[v] || 0);
+    },
+    0);
+
+    var score = hits / grams.length;
 
     return { typo: typo, value: value, score: score };
   });
@@ -1075,8 +1085,8 @@ function run() {
     die("Required '--original-file' or '--markup' argument." + seeHelp);
   }
 
-  if (options.format != null && options.format != 'hex'
-      && options.format != 'base64') {
+  if (options.format != null && options.format !== 'hex'
+      && options.format !== 'base64') {
     die("Format must be 'hex' or 'base64'." + seeHelp);
   }
 
