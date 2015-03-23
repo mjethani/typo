@@ -221,22 +221,12 @@ function hash(message, algorithm) {
   return crypto.Hash(algorithm || 'sha256').update(message).digest();
 }
 
-function swap(obj, k1, k2) {
-  var tmp = obj[k1];
-  obj[k1] = obj[k2];
-  obj[k2] = tmp;
-}
-
 function shuffle(array) {
   if (array == null) {
     return array;
   }
 
-  for (var i = 0; i < array.length; i++) {
-    swap(array, i, Math.floor(Math.random() * array.length));
-  }
-
-  return array;
+  return array.sort(function () { return Math.random() - .5 || 1 });
 }
 
 function unique(array) {
@@ -245,25 +235,31 @@ function unique(array) {
   }
 
   // Filter out duplicates while preserving order.
-
-  var set = [];
-
   var obj = {};
 
-  for (var i = 0; i < array.length; i++) {
-    var item = array[i];
-
+  return array.reduce(function (set, item) {
     if (!obj.hasOwnProperty(item)) {
       obj[item] = set.push(item);
     }
-  }
 
-  return set;
+    return set;
+  },
+  []);
 }
 
 function sortBy(array, prop) {
   return array.sort(function (a, b) {
     return -(a[prop] < b[prop]) || +(a[prop] > b[prop]);
+  });
+}
+
+function typeMatch(one, other, type, exempt) {
+  // Check that every property of the given type in one object is also of the
+  // same type in the other object.
+  return Object.keys(one).every(function (key) {
+    return typeof one[key] !== type
+        || typeof other[key] === type
+        || exempt && exempt.indexOf(key) !== -1;
   });
 }
 
@@ -604,15 +600,9 @@ function processWord(word, buffer, offset) {
   // It's easier to find a match for one (as you see below), and the remaining
   // bits can be used for special purposes.
 
-  var typos = generateTypos(word);
-
-  for (var i = 0; i < typos.length; i++) {
-    var candidate = typos[i];
-
-    if (wordValue(candidate) === nibble) {
-      return candidate;
-    }
-  }
+  generateTypos(word).some(function (candidate) {
+    return wordValue(candidate) === nibble && (word = candidate, true);
+  });
 
   return word;
 }
@@ -1007,6 +997,17 @@ function run() {
     return;
   }
 
+  var optKeys = Object.keys(options);
+
+  var seeHelp = os.EOL + os.EOL + "See '" + _name + " --help'."
+      + os.EOL;
+
+  optKeys.forEach(function (name) {
+    if (!defaultOptions.hasOwnProperty(name)) {
+      die("Unknown option '" + name + "'." + seeHelp);
+    }
+  });
+
   var decodeMode = options.decode;
   var queryMode  = options.hasOwnProperty('query');
 
@@ -1027,40 +1028,24 @@ function run() {
       .split(' '));
 
   if (encodeMode + decodeMode + queryMode !== 1
-      || (encodeMode && !Object.keys(options).every(isEncodeOption))
-      || (decodeMode && !Object.keys(options).every(isDecodeOption))
-      || (queryMode  && !Object.keys(options).every(isQueryOption))) {
+      || (encodeMode && !optKeys.every(isEncodeOption))
+      || (decodeMode && !optKeys.every(isDecodeOption))
+      || (queryMode  && !optKeys.every(isQueryOption))) {
     dieOnExit();
     printUsage();
     return;
   }
 
-  var seeHelp = os.EOL + os.EOL + "See '" + _name + " --help'."
-      + os.EOL;
-
-  var name = null;
-
-  for (name in options) {
-    if (!defaultOptions.hasOwnProperty(name)) {
-      die("Unknown option '" + name + "'." + seeHelp);
-    }
-  }
-
-  for (name in defaultOptions) {
-    // If any boolean options have non-boolean (string) values, print usage and
-    // exit.
-    if (typeof defaultOptions[name] === 'boolean'
-        && typeof options[name] !== 'boolean'
-        && name !== 'password') {
-      dieOnExit();
-      printUsage();
-      return;
-    }
+  // If any boolean options have non-boolean (string) values, print usage and
+  // exit.
+  if (!typeMatch(defaultOptions, options, 'boolean', [ 'password' ])) {
+    dieOnExit();
+    printUsage();
+    return;
   }
 
   // Positional arguments.
-  (encodeMode ? [ 'secret', 'file' ] : [ 'file' ])
-    .forEach(function (name) {
+  (encodeMode ? [ 'secret', 'file' ] : [ 'file' ]).forEach(function (name) {
     var arg = options['...'].shift();
     if (arg !== undefined && options[name] === null) {
       options[name] = arg;
@@ -1073,12 +1058,12 @@ function run() {
     return;
   }
 
-  for (name in options) {
+  optKeys.forEach(function (name) {
     if ((name === 'file' || name.slice(-5) === '-file')
         && options[name] === '') {
       die('Filename cannot be blank.' + seeHelp);
     }
-  }
+  });
 
   if (decodeMode && !options['original-file'] && !options.markup) {
     die("Required '--original-file' or '--markup' argument." + seeHelp);
