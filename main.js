@@ -182,7 +182,7 @@ function parseArgs(args) {
           var name  = arg.slice(2, eq);
 
           if (single && eq === arg.length - 1) {
-            expect = name;
+            obj[expect = name] = '';
 
             return obj;
           }
