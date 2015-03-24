@@ -964,6 +964,7 @@ function query(q) {
 
 function run() {
   if (process.argv.length <= 2) {
+    // No arguments.
     dieOnExit();
     printUsage();
     return;
@@ -1008,6 +1009,7 @@ function run() {
 
   if ((options.help || options.version || options.license)
       && Object.keys(options).length > 1) {
+    // '--help', '--version', and '--license' do not take any arguments.
     dieOnExit();
     printUsage();
     return;
@@ -1039,29 +1041,29 @@ function run() {
     }
   });
 
+  // There are three 'modes' broadly: encode (default), decode, and query.
   var decodeMode = options.decode;
   var queryMode  = options.hasOwnProperty('query');
 
   var encodeMode = !decodeMode && !queryMode;
 
-  var contains = function (arr, elem) { return arr.indexOf(elem) !== -1 };
+  var validOpts = null;
 
-  var isEncodeOption = contains.bind(null,
-      'verbose secret file output-file format password authenticated nosalt'
-      + ' markup deterministic rulesets ruleset-file'
-      .split(' '));
-  var isDecodeOption = contains.bind(null,
-      'verbose decode file original-file format password authenticated nosalt'
-      + ' markup'
-      .split(' '));
-  var isQueryOption  = contains.bind(null,
-      'verbose query rulesets ruleset-file'
-      .split(' '));
+  // Valid options for each mode.
+  if (encodeMode) {
+    validOpts = 'verbose secret file output-file format password'
+      + ' authenticated nosalt markup deterministic rulesets ruleset-file';
+  } else if (decodeMode) {
+    validOpts = 'verbose decode file original-file format password'
+      + ' authenticated nosalt markup';
+  } else if (queryMode) {
+    validOpts = 'verbose query rulesets ruleset-file';
+  }
+
+  validOpts = validOpts && validOpts.split(' ') || [];
 
   if (encodeMode + decodeMode + queryMode !== 1
-      || (encodeMode && !optKeys.every(isEncodeOption))
-      || (decodeMode && !optKeys.every(isDecodeOption))
-      || (queryMode  && !optKeys.every(isQueryOption))) {
+      || !optKeys.every(function (k) { return validOpts.indexOf(k) !== -1 })) {
     dieOnExit();
     printUsage();
     return;
