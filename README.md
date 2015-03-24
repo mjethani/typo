@@ -34,7 +34,7 @@ Verify the installation:
 
 To encode a secret:
 
-    typo '1984' < message.txt > message.typo.txt
+    typo '1984' message.txt -o message.typo.txt
 
 Where "1984" is the secret.
 
