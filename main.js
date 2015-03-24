@@ -148,6 +148,7 @@ function parseArgs(args) {
   var obj = Object.create(defaultOptions);
 
   obj = Object.defineProperty(obj, '...', { value: [] });
+  obj = Object.defineProperty(obj, '!?',  { value: [] });
 
   // Preprocessing.
   args = args.reduce(function (newArgs, arg) {
@@ -167,7 +168,7 @@ function parseArgs(args) {
 
   stop = false;
 
-  return args.reduce(function (obj, arg) {
+  return args.reduce(function (obj, arg, index) {
     var single = !stop && arg[0] === '-' && arg[1] !== '-';
 
     if (!(single && !(arg = shortcuts[arg]))) {
@@ -180,6 +181,12 @@ function parseArgs(args) {
           }
 
           var name  = arg.slice(2, eq);
+
+          if (!single && !defaultOptions.hasOwnProperty(name)) {
+            obj['!?'].push(arg.slice(0, eq));
+
+            return obj;
+          }
 
           if (single && eq === arg.length - 1) {
             obj[expect = name] = '';
@@ -203,6 +210,9 @@ function parseArgs(args) {
       } else {
         obj['...'].push(arg);
       }
+
+    } else if (single) {
+      obj['!?'].push(args[index]);
     }
 
     expect = null;
@@ -1015,6 +1025,13 @@ function run() {
 
   var options = parseArgs(process.argv.slice(2), defaultOptions, shortcuts);
 
+  var seeHelp = os.EOL + os.EOL + "See '" + _name + " --help'."
+      + os.EOL;
+
+  if (options['!?'].length > 0) {
+    die("Unknown option '" + options['!?'][0] + "'." + seeHelp);
+  }
+
   if ((options.help || options.version || options.license)
       && Object.keys(options).length > 1) {
     // '--help', '--version', and '--license' do not take any arguments.
@@ -1039,15 +1056,6 @@ function run() {
   }
 
   var optKeys = Object.keys(options);
-
-  var seeHelp = os.EOL + os.EOL + "See '" + _name + " --help'."
-      + os.EOL;
-
-  optKeys.forEach(function (name) {
-    if (!defaultOptions.hasOwnProperty(name)) {
-      die("Unknown option '" + name + "'." + seeHelp);
-    }
-  });
 
   // There are three 'modes' broadly: encode (default), decode, and query.
   var decodeMode = options.decode;
