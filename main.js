@@ -386,9 +386,9 @@ function prompt(label, quiet, callback) {
   });
 }
 
-function deriveKey(password, covertext, random, length) {
+function deriveKey(password, salt, extraSalt, length) {
   return crypto.pbkdf2Sync(password || '',
-      Buffer.concat([ hash(covertext), random || new Buffer(0) ]),
+      Buffer.concat([ salt, extraSalt || new Buffer(0) ]),
       0x100000,
       length, 'sha256');
 }
@@ -402,7 +402,7 @@ function encrypt(buffer, password, covertext, random, authenticated) {
     algorithm = 'aes-256-gcm';
   }
 
-  var key = deriveKey(password, covertext, random, keyLength);
+  var key = deriveKey(password, hash(covertext), random, keyLength);
   var cipher = crypto.createCipheriv(algorithm, key.slice(0, 32),
       key.slice(32));
 
@@ -425,7 +425,7 @@ function decrypt(buffer, password, covertext, random, authenticated) {
     algorithm = 'aes-256-gcm';
   }
 
-  var key = deriveKey(password, covertext, random, keyLength);
+  var key = deriveKey(password, hash(covertext), random, keyLength);
   var decipher = crypto.createDecipheriv(algorithm, key.slice(0, 32),
       key.slice(32));
 
