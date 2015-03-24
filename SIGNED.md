@@ -4,19 +4,19 @@
 Version: GnuPG/MacGPG2 v2.0.22 (Darwin)
 Comment: GPGTools - https://gpgtools.org
 
-iQIcBAABCgAGBQJVEWYZAAoJEPvclVzmt0MDqiwQAKV+cIozG/Pke483GAX3wzvU
-LXuJjfZtF2Q8Jk/DPYXiwF5FRX+UYkBhNKZn3zzrWO+XnusIXOkJJtBbsNvcHPBu
-+BBzjwhHbRK2JOzOIR6msW44wmhnb6zmsafnggTykcJys5z9KZuDZ8gfa/dQxSMl
-g8SKabCtXCZvCO8E9GdoVq8+3KR3oMLYtOT4+J95j2wvPeMwDYOV88yJjuwYGquk
-Krv40UXb4v0qrJbISedPpsBAi6iO9kv3M4S5l6rXjr53IRF4GkRMXZecGwjmYnz+
-1fDh6TTfgnNd+BbKfN3QylX1jKyidtUEgvDQ19yo5P5GeQ7Mf+F555HMYe5qsdno
-jp0liuHVB7PY9WDI7QBCFcRXGYirjweE2/r1BCWv88URDYi3X/rKT5FQX8LGfCVf
-1Bse54Q1QYnsdUm2e3r888EkjW0sCRqmzjM8BO+b1jdFYUGdTOymChF9qb/1GCjX
-cTKY0qASPenxnuxKKnYGbApBTz3wEGvKQfdADHHx6dBc3x6MEui2bcWhxID6cYjH
-woIdej6tprLk07whBatxPsNQ7IsjnojZXuJESGUwoEQTFJMMun8TPnNGfJGIuYOH
-sRLjHLrbwe8Bx0zPngoaYUxUBybSRT82PkSAl+Z87EcgW//NwkHvGZRWzLY077aR
-FIygw5qrGxfIe9ioZEfi
-=KR3L
+iQIcBAABCgAGBQJVEadLAAoJEPvclVzmt0MD94UP/0xOVol4muFulpbUgLWrro4A
+EsbJyRdA+RbltEWFB75FSGewjDt3cTcU0Xa6sy6QgsscsCpkzRC6aKt4vpVJj65Z
+LTYjoJ10x0MzLT6mANAwLmL3Tqg9FQQn81JDkwwUmyWEMAZO5rLwXZzM+J8Dhxfc
+rrLb5vGk3n/De5XZnIAuUoPHN2oFln9PGy1aqlGVU8cWT6Hdtjqdz3699/hj/rft
+L/b5fUGsRZeG4PkL67vnpBruqfSlESffJ3mF/DZ2/PzrWo++NYVBf+IZNSyPFfi9
+orFXCF7JzHLMaxuxyhriJCzoiEOHYCx8DYCT7anq4MWWzqe4Fo2LNc6uDvpvP1T9
+kBLWUVg4pBoBd2d5rJ2bn/Bh2/PSGxqpfTLBeLyp8iX8Hz5QadjjTOx/bv5Clk/8
+DDIrUQSIBy4I6GaY3Eq+STaGV4xIswOVdsG9n4W39JON8wWOl44vAg/UiMWhAIfp
+e+ckfssj6l9B7hHIoscl75PiK4sNXsx7JDeb4TJjThbPHjFOY61QfCjJKnH7/aZs
+bSlMMGuELypYPKQJ7m0L1Qp/3/pFI5kcF2hQcQo6Yzo2PBtxqJSDn0pgAopmnmsC
+cHFeLQfUhzb0xM7XKVlmwSZaobnt7F8s1DJv77co5F0We8LmMQ0u+nXRwLZQkAYt
+zGqE3A0WkZ9PQLEgTsrn
+=fS20
 -----END PGP SIGNATURE-----
 
 ```
@@ -32,14 +32,14 @@ size   exec  file                 contents
              ./                                                                                                                                                    
 14             .gitignore         227db518858edeb0c6428134d2b802bd357e1a5793c337aa2766eda272de46ba                                                                 
 732            LICENSE            e7fa0c5707aa3eae23e841a73ea57cda21f3bd87b90ba3ea254ca5bdec29d386                                                                 
-1053           README.md          6de342710d584018dfca9e7fb064b23806d2edb1266e77d60b819e1c213728e5                                                                 
+1053           README.md          6803537119aec8995e1ca8ce62e0ac7feaf1e6f576aba67996f8e7acbfaeffd0                                                                 
 3988           default.help       fba066c8a860aa31354dee6214dd5101b5f79be84efc66d9b212bdc933a624b4                                                                 
 14310          dictionary         c68088ec46bb71d60447e956c4bdf1c3801c97791786fdd45522bb5e8a253163                                                                 
 921            grammatical.rules  0823880f62bd7f2372efd2f43bc36ddb4d2d6919f892e7520e1ee8f9b443400c                                                                 
 56             keyboard           c8431394f7812b8022fdcd86bd359056a26e538fac4446ab1e908753e1fa1a89                                                                 
-28936          main.js            a5fb0ca6dbdb1b88778477390de149d2689def2100fd5893f5ad126bb1edcd7f                                                                 
+29269          main.js            33107d5579cd195053d7e6bbe4c56a34d712ccb4646148ced1cfc70c49302a73                                                                 
 44032          misspelling.rules  4bdbfbfe2abfabafae0f8af4c29e2d0a5d98a2bb9c234749dbbf62395b378862                                                                 
-722            package.json       7f861b4cc8a57ea6144109248951790799977961f8020323a49787faa0fea165                                                                 
+722            package.json       726e83741588dbb5b5c6b6759a24765a2c070d22e33491f4e5f0fb11a03e7374                                                                 
 12516          qwerty.rules       7bdbb9b8cd8ab58e72887e084976689b00ab12862445d4f3fac51c3bbaf23364                                                                 
 54908          screenshot.png     a6171e315392ee0d98641f3bcd7f05636fb988d5b5a15b49c2cdb537cb8805da|7a555df6a99c038be00da6d0b68a7b7dba44c010f760d466528658f61fe70404
 26341          security.png       1dfd9f6409fccd5316779b99b835fefd20bd0b57b8bcecc8156c5798af00e9eb|d06142c796249dc95470f5420ef4316a369f2ee159bb12c403768546052c20ad
