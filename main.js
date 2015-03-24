@@ -245,11 +245,17 @@ function typeMatch(one, other, type, exempt) {
 }
 
 function trigrams(word) {
+  // Return three-letter sequences for the word.
+
+  // Example: 'hello' ...
+
   var seq = [
+    // '^he', 'lo$'
     '^' + word.slice(0, 2),
     word.slice(word.length - 2) + '$'
   ];
 
+  // 'hel', 'ell', 'llo'
   for (var i = 0; i < word.length - 2; i++) {
     seq.push(word.slice(i, i + 3));
   }
@@ -400,13 +406,14 @@ function encrypt(buffer, text, password, salt, authenticated) {
   var cipher = crypto.createCipheriv(algorithm, key.slice(0, 32),
       key.slice(32));
 
-  var result = Buffer.concat([ cipher.update(buffer), cipher.final() ]);
+  var encrypted = Buffer.concat([ cipher.update(buffer), cipher.final() ]);
 
   if (authenticated) {
-    result = Buffer.concat([ result, cipher.getAuthTag() ]);
+    // Attach 16-byte authentication tag.
+    encrypted = Buffer.concat([ encrypted, cipher.getAuthTag() ]);
   }
 
-  return result;
+  return encrypted;
 }
 
 function decrypt(buffer, text, password, salt, authenticated) {
@@ -431,7 +438,11 @@ function decrypt(buffer, text, password, salt, authenticated) {
 }
 
 function wordValue(word) {
-  return hash(word)[0] & 0xF;
+  // The value of a word is the lower half of the first octet of its SHA-256
+  // digest.
+  // 
+  // e.g. 'colour' is 6 (hash: 'd6838c35...')
+  return hash(word, 'sha256')[0] & 0xF;
 }
 
 function printVersion() {
@@ -558,11 +569,14 @@ function readInputText(filename, callback) {
 }
 
 function checkPlausibility(typo) {
+  // Check if the typo is 'plausible' (note: quotes).
   var n = trigrams(typo.toLowerCase()).reduce(function (a, v) {
     return a + !!dictionary[v];
   },
   0);
 
+  // If every three-letter sequence in the word occurs at least once in the
+  // dictionary, we consider it 'plausible'.
   return n / typo.length >= 1;
 }
 
@@ -573,10 +587,12 @@ function generateTypos(word) {
 
   var collection = [];
 
+  // Bookkeeping.
   var book = {};
 
   rulesetOrder.forEach(function (name) {
     if (!rules.hasOwnProperty(name)) {
+      // Ruleset is not available.
       return;
     }
 
@@ -584,7 +600,11 @@ function generateTypos(word) {
       var mutation = word.replace(rule.re, rule.sub);
 
       if (mutation === word
+          // Include every mutation no more than once.
           || book.hasOwnProperty(mutation)
+
+          // For QWERTY typos, include the typo only if it passes the
+          // 'plausibility' test.
           || (name === 'qwerty' && !checkPlausibility(mutation))
           ) {
         return;
@@ -600,17 +620,17 @@ function generateTypos(word) {
 }
 
 function processWord(word, buffer, offset) {
+  // Take the low 4 bits.
   var nibble = 0xF & buffer[offset];
 
-  var typos = generateTypos(word);
-
-  for (var i = 0; i < typos.length; i++) {
-    var candidate = typos[i];
-
+  generateTypos(word).some(function (candidate) {
     if (wordValue(candidate) === nibble) {
-      return candidate;
+      // This typo works.
+      word = candidate;
+
+      return true;
     }
-  }
+  });
 
   return word;
 }
