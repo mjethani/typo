@@ -397,8 +397,10 @@ function slurpFileSync(filename) {
   return fs.readFileSync(filename, { encoding: 'utf8' });
 }
 
-function dumpFile(filename, transformer) {
-  var stream = process.stdout;
+function dumpFile(filename, stream, transformer) {
+  if (!stream) {
+    stream = process.stdout;
+  }
 
   if (transformer) {
     transformer.pipe(stream);
@@ -538,7 +540,7 @@ function printUsage() {
     callback();
   };
 
-  dumpFile(path.join(__dirname, 'default.help'), x);
+  dumpFile(path.join(__dirname, 'default.help'), process.stderr, x);
 }
 
 function loadDictionary() {
