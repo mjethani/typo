@@ -230,6 +230,36 @@ function hash(message, algorithm) {
   return crypto.Hash(algorithm || 'sha256').update(message).digest();
 }
 
+function stringDistance(s, t) {
+  if (s.length === 0) {
+    return t.length;
+  } else if (t.length === 0) {
+    return s.length;
+  } else if (s === t) {
+    return 0;
+  }
+
+  var a = new Array(t.length + 1);
+  for (var x = 0; x < a.length; x++) {
+    a[x] = x;
+  }
+
+  for (var j = 1; j <= s.length; j++) {
+    var p = a[0]++;
+    for (var k = 1; k <= t.length; k++) {
+      var o = a[k];
+      if (s[j - 1] === t[k - 1]) {
+        a[k] = p;
+      } else {
+        a[k] = Math.min(a[k - 1] + 1, a[k] + 1, p + 1);
+      }
+      p = o;
+    }
+  }
+
+  return a[t.length];
+}
+
 function shuffle(array) {
   for (var m = array.length - 1; m >= 0; m--) {
     var x = 0 | Math.random() * (m + 1);
@@ -246,6 +276,25 @@ function sortBy(array, prop) {
   return array.sort(function (a, b) {
     return -(a[prop] < b[prop]) || +(a[prop] > b[prop]);
   });
+}
+
+function findCloseMatches(string, candidateList, distanceThreshold) {
+  if (arguments.length < 3) {
+    distanceThreshold = 1;
+  }
+
+  var matches = candidateList.map(function (candidate) {
+    return {
+      candidate: candidate,
+      distance:  stringDistance(string, candidate)
+    };
+  }).filter(function (match) {
+    return match.distance <= distanceThreshold;
+  });
+
+  sortBy(matches, 'distance');
+
+  return matches.map(function (match) { return match.candidate });
 }
 
 function typeMatch(one, other, type, exempt) {
@@ -1028,8 +1077,29 @@ function run() {
   var seeHelp = os.EOL + os.EOL + "See '" + _name + " --help'."
       + os.EOL;
 
-  if (options['!?'].length > 0) {
-    die("Unknown option '" + options['!?'][0] + "'." + seeHelp);
+  var unknown = options['!?'][0];
+
+  if (unknown) {
+    console.error("Unknown option '" + unknown + "'." + seeHelp);
+
+    if (unknown.slice(0, 2) === '--') {
+      // Find and display close matches using Levenshtein distance.
+      var closeMatches = findCloseMatches(unknown.slice(2),
+          Object.keys(defaultOptions),
+          2);
+
+      if (closeMatches.length > 1) {
+        console.error('Did you mean one of these?');
+      } else if (closeMatches.length === 1) {
+        console.error('Did you mean this?');
+      }
+
+      closeMatches.forEach(function (v) {
+        console.error('\t' + v);
+      });
+    }
+
+    die();
   }
 
   if ((options.help || options.version || options.license)
