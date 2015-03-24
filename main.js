@@ -221,11 +221,15 @@ function hash(message, algorithm) {
 }
 
 function shuffle(array) {
-  if (array == null) {
-    return array;
+  for (var m = array.length - 1; m >= 0; m--) {
+    var x = 0 | Math.random() * (m + 1);
+    if (x !== m) {
+      var p = array[x];
+      array[x] = array[m];
+      array[m] = p;
+    }
   }
-
-  return array.sort(function () { return Math.random() - .5 || 1 });
+  return array;
 }
 
 function sortBy(array, prop) {
@@ -532,7 +536,7 @@ function loadRulesets(spec, filename) {
 }
 
 function shuffleRules(name) {
-  shuffle(rules[name]);
+  shuffle(rules[name] || []);
 }
 
 function mapOptions(options, names, values) {
