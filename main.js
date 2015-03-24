@@ -1,5 +1,5 @@
 /*  ----------------------------------------------------------------------------
- *  typo v0.4.1
+ *  typo v0.4.2
  *  
  *  Hide secret information in typographical errors
  *  
