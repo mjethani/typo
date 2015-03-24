@@ -555,7 +555,7 @@ function readPassword(password, callback) {
   }
 }
 
-function readInputText(filename, callback) {
+function readMessage(filename, callback) {
   if (filename) {
     say('Reading input from file ' + filename);
 
@@ -1121,8 +1121,8 @@ function run() {
 
       function (password, callback) {
         if (encodeMode || decodeMode) {
-          readInputText(options.file, function (error, text) {
-            callback(error, password, text);
+          readMessage(options.file, function (error, message) {
+            callback(error, password, message);
           });
 
         } else {
@@ -1130,21 +1130,21 @@ function run() {
         }
       },
 
-      function (password, text, callback) {
+      function (password, message, callback) {
         if (decodeMode && !options.markup) {
           // Read the original file.
           say('Reading original file ' + options['original-file']);
 
-          slurpFile(options['original-file'], function (error, originalText) {
-            callback(error, password, text, originalText);
+          slurpFile(options['original-file'], function (error, original) {
+            callback(error, password, message, original);
           });
 
         } else {
-          callback(null, password, text, null);
+          callback(null, password, message, null);
         }
       },
 
-      function (password, text, originalText, callback) {
+      function (password, message, original, callback) {
         if (encodeMode || queryMode) {
           loadDictionary();
 
@@ -1162,7 +1162,7 @@ function run() {
 
           say('Encoding');
 
-          var output = encode(text, options.secret, password, options);
+          var output = encode(message, options.secret, password, options);
 
           if (!output) {
             throw '';
@@ -1173,8 +1173,8 @@ function run() {
         } else if (decodeMode) {
           say('Decoding');
 
-          var secret = decode(text, password,
-              Object.create(options, { original: { value: originalText } })
+          var secret = decode(message, password,
+              Object.create(options, { original: { value: original } })
               );
 
           say('Secret: ' + secret);
