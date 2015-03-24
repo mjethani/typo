@@ -386,14 +386,14 @@ function prompt(label, quiet, callback) {
   });
 }
 
-function deriveKey(text, password, salt, length) {
+function deriveKey(password, covertext, random, length) {
   return crypto.pbkdf2Sync(password || '',
-      Buffer.concat([ hash(text), salt || new Buffer(0) ]),
+      Buffer.concat([ hash(covertext), random || new Buffer(0) ]),
       0x100000,
       length, 'sha256');
 }
 
-function encrypt(buffer, text, password, salt, authenticated) {
+function encrypt(buffer, password, covertext, random, authenticated) {
   var keyLength = 48;
   var algorithm = 'aes-256-ctr';
 
@@ -402,7 +402,7 @@ function encrypt(buffer, text, password, salt, authenticated) {
     algorithm = 'aes-256-gcm';
   }
 
-  var key = deriveKey(text, password, salt, keyLength);
+  var key = deriveKey(password, covertext, random, keyLength);
   var cipher = crypto.createCipheriv(algorithm, key.slice(0, 32),
       key.slice(32));
 
@@ -416,7 +416,7 @@ function encrypt(buffer, text, password, salt, authenticated) {
   return encrypted;
 }
 
-function decrypt(buffer, text, password, salt, authenticated) {
+function decrypt(buffer, password, covertext, random, authenticated) {
   var keyLength = 48;
   var algorithm = 'aes-256-ctr';
 
@@ -425,7 +425,7 @@ function decrypt(buffer, text, password, salt, authenticated) {
     algorithm = 'aes-256-gcm';
   }
 
-  var key = deriveKey(text, password, salt, keyLength);
+  var key = deriveKey(password, covertext, random, keyLength);
   var decipher = crypto.createDecipheriv(algorithm, key.slice(0, 32),
       key.slice(32));
 
@@ -635,7 +635,7 @@ function processWord(word, buffer, offset) {
   return word;
 }
 
-function extractTyposFromOriginalText(text, originalText) {
+function extractTypos(original, modified) {
   // Compare the two texts to get all the typos.
   var typos = [];
 
@@ -647,15 +647,15 @@ function extractTyposFromOriginalText(text, originalText) {
 
   var c = null;
 
-  for (i = 0; i < text.length; i++) {
-    if (text[i] !== originalText[i + offset]) {
+  for (i = 0; i < modified.length; i++) {
+    if (modified[i] !== original[i + offset]) {
       // We've hit a typo!
 
       var word = '';
 
       // Add every character until the beginning of the word.
       for (j = i - 1; j >= 0; j--) {
-        c = text[j];
+        c = modified[j];
 
         if (!c.match(wordCharacter)) {
           break;
@@ -665,8 +665,8 @@ function extractTyposFromOriginalText(text, originalText) {
       }
 
       // Now add every character until the end of the word.
-      for (j = i; j < text.length; j++) {
-        c = text[j];
+      for (j = i; j < modified.length; j++) {
+        c = modified[j];
 
         if (!c.match(wordCharacter)) {
           break;
@@ -679,8 +679,8 @@ function extractTyposFromOriginalText(text, originalText) {
       typos.push(word);
 
       // Stay in sync with the original text.
-      for (k = i + offset; k < originalText.length; k++) {
-        if (!originalText[k].match(wordCharacter)) {
+      for (k = i + offset; k < original.length; k++) {
+        if (!original[k].match(wordCharacter)) {
           break;
         }
       }
@@ -690,40 +690,37 @@ function extractTyposFromOriginalText(text, originalText) {
     }
   }
 
-  return {
-    typos: typos,
-    text:  originalText
-  };
+  return typos;
 }
 
-function extractTyposFromMarkup(text) {
+function extractTyposFromMarkup(markup) {
   var typos = [];
 
   // Look for our custom markup, which is of the form '{[s/typo/correction/]}'
-  var index = text.indexOf('{[s/');
+  var index = markup.indexOf('{[s/');
   while (index !== -1) {
-    var x1 = text.indexOf('/', index + 4) + 1;
-    var x2 = text.indexOf('/', x1);
+    var x1 = markup.indexOf('/', index + 4) + 1;
+    var x2 = markup.indexOf('/', x1);
 
     // Extract typo and save it.
-    typos.push(text.slice(index + 4, x1 - 1));
+    typos.push(markup.slice(index + 4, x1 - 1));
 
     // Also do the substitution on the input text.
-    text = text.slice(0, index) + text.slice(x1, x2) + text.slice(x2 + 3);
+    markup = markup.slice(0, index) + markup.slice(x1, x2)
+      + markup.slice(x2 + 3);
 
-    index = text.indexOf('{[s/');
+    index = markup.indexOf('{[s/');
   }
 
   // By the end of the loop we have both the list of typos and the original
   // text.
   return {
-    typos: typos,
-    text:  text
+    typos:     typos,
+    original:  markup
   };
 }
 
-function encode(text, secret, format, password, authenticated, nosalt,
-    markup, deterministic) {
+function encode(message, secret, password, options) {
   var result = null;
 
   if (password) {
@@ -732,23 +729,24 @@ function encode(text, secret, format, password, authenticated, nosalt,
 
   say('Encrypting ...');
 
-  var salt = !deterministic && !nosalt ? crypto.randomBytes(2) : null;
+  var saltRandom = !options.deterministic && !options.nosalt
+      ? crypto.randomBytes(2) : null;
 
   // Convert the string into a buffer and encrypt the buffer using the given
-  // password, the text, and the random salt.
+  // password, the input text, and the random salt.
   // 
   // Note: The SHA-256 of the original text along with a random two bytes is
   // used as the salt to PBKDF2. If '--nosalt' is used, an empty string is used
   // as the salt. Also, if password is null, an empty password is used anyway.
-  var buffer = encrypt(stringToBuffer(secret, format), !nosalt && text || '',
-      password, salt, authenticated);
+  var buffer = encrypt(stringToBuffer(secret, options.format), password,
+      !options.nosalt && message || '', saltRandom, options.authenticated);
 
   say('Encrypted secret:', prettyBuffer(buffer));
 
-  if (salt) {
-    say('Salt:', prettyBuffer(salt));
+  if (saltRandom) {
+    say('Salt:', prettyBuffer(saltRandom));
 
-    buffer = Buffer.concat([ salt, buffer ]);
+    buffer = Buffer.concat([ saltRandom, buffer ]);
   }
 
   say('Buffer size: ' + buffer.length);
@@ -756,7 +754,7 @@ function encode(text, secret, format, password, authenticated, nosalt,
   var random = null;
   var odd = false;
 
-  if (!deterministic) {
+  if (!options.deterministic) {
     try {
       random = crypto.randomBytes(2);
 
@@ -767,14 +765,14 @@ function encode(text, secret, format, password, authenticated, nosalt,
     }
   }
 
-  // This is the ratio of the total number of typos to the text length. It's
+  // This is the ratio of the total number of typos to the message length. It's
   // the rate at which typos should be introduced. We want to make sure the
   // typos are spread out more or less evenly.
-  var density = (buffer.length * 2 + odd) / text.length;
+  var density = (buffer.length * 2 + odd) / message.length;
 
   say('Density: ' + (density * 1000).toFixed(4) + ' per thousand');
 
-  // This is how much we try to squeeze the information into the text.
+  // This is how much we try to squeeze the information into the message.
   var multiplier = 1.0;
 
   do {
@@ -789,8 +787,8 @@ function encode(text, secret, format, password, authenticated, nosalt,
 
     result = '';
 
-    for (var i = 0; i < text.length; i++) {
-      var c = text[i];
+    for (var i = 0; i < message.length; i++) {
+      var c = message[i];
 
       if (c.match(wordCharacter)) {
         word += c;
@@ -824,7 +822,7 @@ function encode(text, secret, format, password, authenticated, nosalt,
           var replacement = newWord;
 
           if (newWord !== word) {
-            if (markup) {
+            if (options.markup) {
               replacement = '{[s/' + newWord + '/' + word + '/]}';
 
               // Once you're satisfied with the result, open in Vim and do:
@@ -839,10 +837,10 @@ function encode(text, secret, format, password, authenticated, nosalt,
             }
 
             if (++count >>> 1 >= buffer.length && !odd) {
-              // Optimization: We don't want any more typos. Just add the rest
-              // of the text and move on.
+              // Optimization: We have enough typos now, let's add the rest of
+              // the text and get out of this loop.
               result += replacement;
-              result += text.slice(i);
+              result += message.slice(i);
               break;
             }
           }
@@ -870,35 +868,39 @@ function encode(text, secret, format, password, authenticated, nosalt,
   return result;
 }
 
-function decode(text, originalText, format, password, authenticated, nosalt) {
-  var buffer = null;
+function decode(message, password, options) {
+  var original = null;
 
-  var extractInfo = null;
+  var typos = null;
 
   say('Extracting typos');
 
-  if (originalText != null) {
+  if (options.original != null) {
     // If we have the original text, we're only interested in extracting the
     // typos.
-    extractInfo = extractTyposFromOriginalText(text, originalText);
+    typos = extractTypos(original = options.original, message);
+
   } else {
     // If the original text hasn't been provided, then we assume the input text
     // contains substitution markup, and we try to extract both the list of
     // typos and the original text out of it.
-    extractInfo = extractTyposFromMarkup(text);
+    var obj = extractTyposFromMarkup(message);
+
+    original = obj.original;
+    typos = obj.typos;
   }
 
-  if (extractInfo.typos.length % 2 === 1) {
+  if (typos.length % 2 === 1) {
     // Ignore any odd typo at the end.
-    extractInfo.typos.pop();
+    typos.pop();
   }
 
-  buffer = new Buffer(extractInfo.typos.length / 2);
+  var buffer = new Buffer(typos.length / 2);
 
   say('Buffer size: ' + buffer.length);
 
-  for (var i = 0; i < extractInfo.typos.length; i++) {
-    var d = wordValue(extractInfo.typos[i]);
+  for (var i = 0; i < typos.length; i++) {
+    var d = wordValue(typos[i]);
 
     // Read the encrypted secret 4 bits at a time. The even ones are the low 4
     // bits, the odd ones are the high 4 bits.
@@ -909,12 +911,12 @@ function decode(text, originalText, format, password, authenticated, nosalt) {
     }
   }
 
-  var salt = null;
+  var saltRandom = null;
 
-  if (!nosalt) {
-    salt = buffer.slice(0, 2);
+  if (!options.nosalt) {
+    saltRandom = buffer.slice(0, 2);
 
-    say('Salt:', prettyBuffer(salt));
+    say('Salt:', prettyBuffer(saltRandom));
 
     buffer = buffer.slice(2);
   }
@@ -928,8 +930,9 @@ function decode(text, originalText, format, password, authenticated, nosalt) {
   say('Decrypting ...');
 
   // Finally, decrypt the buffer to get the original secret.
-  return bufferToString(decrypt(buffer, !nosalt && extractInfo.text || '',
-        password, salt, authenticated), format);
+  return bufferToString(decrypt(buffer, password,
+        !options.nosalt && original || '', saltRandom, options.authenticated),
+      options.format);
 }
 
 function query(q) {
@@ -1154,18 +1157,12 @@ function run() {
           }
         }
 
-        callback(null, password, text, originalText);
-      },
-
-      function (password, text, originalText, callback) {
         if (encodeMode) {
           say('Secret: ' + options.secret);
 
           say('Encoding');
 
-          var output = encode(text, options.secret, options.format, password,
-              options.authenticated, options.nosalt,
-              options.markup, options.deterministic);
+          var output = encode(text, options.secret, password, options);
 
           if (!output) {
             throw '';
@@ -1176,8 +1173,9 @@ function run() {
         } else if (decodeMode) {
           say('Decoding');
 
-          var secret = decode(text, originalText, options.format, password,
-              options.authenticated, options.nosalt);
+          var secret = decode(text, password,
+              Object.create(options, { original: { value: originalText } })
+              );
 
           say('Secret: ' + secret);
 
