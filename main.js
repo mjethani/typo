@@ -386,14 +386,11 @@ function prompt(label, quiet, callback) {
   });
 }
 
-function deriveKey(password, length, salt, extraSalt) {
-  return crypto.pbkdf2Sync(password || '',
-      Buffer.concat([ salt, extraSalt || new Buffer(0) ]),
-      0x100000,
-      length, 'sha256');
+function deriveKey(password, salt, length) {
+  return crypto.pbkdf2Sync(password, salt, 0x100000, length, 'sha256');
 }
 
-function encrypt(buffer, password, covertext, random, authenticated) {
+function encrypt(buffer, password, salt, authenticated) {
   var keyLength = 48;
   var algorithm = 'aes-256-ctr';
 
@@ -402,7 +399,7 @@ function encrypt(buffer, password, covertext, random, authenticated) {
     algorithm = 'aes-256-gcm';
   }
 
-  var key = deriveKey(password, keyLength, hash(covertext), random);
+  var key = deriveKey(password, salt, keyLength);
   var cipher = crypto.createCipheriv(algorithm, key.slice(0, 32),
       key.slice(32));
 
@@ -416,7 +413,7 @@ function encrypt(buffer, password, covertext, random, authenticated) {
   return encrypted;
 }
 
-function decrypt(buffer, password, covertext, random, authenticated) {
+function decrypt(buffer, password, salt, authenticated) {
   var keyLength = 48;
   var algorithm = 'aes-256-ctr';
 
@@ -425,7 +422,7 @@ function decrypt(buffer, password, covertext, random, authenticated) {
     algorithm = 'aes-256-gcm';
   }
 
-  var key = deriveKey(password, keyLength, hash(covertext), random);
+  var key = deriveKey(password, salt, keyLength);
   var decipher = crypto.createDecipheriv(algorithm, key.slice(0, 32),
       key.slice(32));
 
@@ -720,6 +717,34 @@ function extractTyposFromMarkup(markup) {
   };
 }
 
+function encryptSecret(secret, format, password, covertext, nosalt,
+    authenticated) {
+  var salt = hash(!nosalt && covertext || '');
+  var extraSalt = !nosalt && crypto.randomBytes(2) || new Buffer(0);
+
+  var encrypted = encrypt(stringToBuffer(secret, format),
+      password || '',
+      Buffer.concat([ salt, extraSalt ]),
+      authenticated);
+
+  return Buffer.concat([ extraSalt, encrypted ]);
+}
+
+function decryptPayload(payload, format, password, covertext, nosalt,
+    authenticated) {
+  var ciphertextBegin = !nosalt ? 2 : 0;
+
+  var salt = hash(!nosalt && covertext || '');
+  var extraSalt = payload.slice(0, ciphertextBegin);
+
+  var decrypted = decrypt(payload.slice(ciphertextBegin),
+      password || '',
+      Buffer.concat([ salt, extraSalt ]),
+      authenticated);
+
+  return bufferToString(decrypted, format);
+}
+
 function encode(message, secret, password, options) {
   var result = null;
 
@@ -729,25 +754,11 @@ function encode(message, secret, password, options) {
 
   say('Encrypting ...');
 
-  var saltRandom = !options.deterministic && !options.nosalt
-      ? crypto.randomBytes(2) : null;
-
-  // Convert the string into a buffer and encrypt the buffer using the given
-  // password, the input text, and the random salt.
-  // 
-  // Note: The SHA-256 of the original text along with a random two bytes is
-  // used as the salt to PBKDF2. If '--nosalt' is used, an empty string is used
-  // as the salt. Also, if password is null, an empty password is used anyway.
-  var buffer = encrypt(stringToBuffer(secret, options.format), password,
-      !options.nosalt && message || '', saltRandom, options.authenticated);
+  var buffer = encryptSecret(secret, options.format, password, message,
+      options.deterministic || options.nosalt,
+      options.authenticated);
 
   say('Encrypted secret:', prettyBuffer(buffer));
-
-  if (saltRandom) {
-    say('Salt:', prettyBuffer(saltRandom));
-
-    buffer = Buffer.concat([ saltRandom, buffer ]);
-  }
 
   say('Buffer size: ' + buffer.length);
 
@@ -911,16 +922,6 @@ function decode(message, password, options) {
     }
   }
 
-  var saltRandom = null;
-
-  if (!options.nosalt) {
-    saltRandom = buffer.slice(0, 2);
-
-    say('Salt:', prettyBuffer(saltRandom));
-
-    buffer = buffer.slice(2);
-  }
-
   say('Encrypted secret:', prettyBuffer(buffer));
 
   if (password) {
@@ -930,9 +931,9 @@ function decode(message, password, options) {
   say('Decrypting ...');
 
   // Finally, decrypt the buffer to get the original secret.
-  return bufferToString(decrypt(buffer, password,
-        !options.nosalt && original || '', saltRandom, options.authenticated),
-      options.format);
+  return decryptPayload(buffer, options.format, password, original,
+      options.nosalt,
+      options.authenticated);
 }
 
 function query(q) {
