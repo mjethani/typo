@@ -59,6 +59,16 @@ var backgroundColors = {
   'white':    { open: 47, close: 49 },
 };
 
+var textStyles = {
+  'bold':     { open:  1, close: 22 },
+  'dim':      { open:  2, close: 22 },
+  'italic':   { open:  3, close: 23 },
+  'underline':  { open:  4, close: 24 },
+  'inverse':  { open:  7, close: 27 },
+  'hidden':   { open:  8, close: 28 },
+  'strikethrough':  { open:  9, close: 29 },
+};
+
 function sayImpl(prefix) {
   if (!prefix) {
     return console.error;
@@ -527,6 +537,10 @@ function isColorName(name) {
   return Object.keys(colors).indexOf(name) !== -1;
 }
 
+function isTextStyleName(name) {
+  return Object.keys(textStyles).indexOf(name) !== -1;
+}
+
 function colorize(text, color, table) {
   if (!table) {
     table = colors;
@@ -545,14 +559,22 @@ function colorize(text, color, table) {
   return '\u001b[' + open + 'm' + text + '\u001b[' + close + 'm';
 }
 
+function textStylize(text, textStyle) {
+  return colorize(text, textStyle, textStyles);
+}
+
 function stylize(text, style) {
   var props = style && style.match(/([^\s]+)/g) || [];
 
   var colorProps = props.filter(isColorName);
+  var textStyleProps = props.filter(isTextStyleName);
 
   // Foreground and background colors respectively.
   text = colorize(text, colorProps[0]);
   text = colorize(text, colorProps[1], backgroundColors);
+
+  // Text styles.
+  text = textStyleProps.reduce(textStylize, text);
 
   return text;
 }
