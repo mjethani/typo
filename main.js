@@ -48,6 +48,17 @@ var colors = {
   'grey':     { open: 90, close: 39 },
 };
 
+var backgroundColors = {
+  'black':    { open: 40, close: 49 },
+  'red':      { open: 41, close: 49 },
+  'green':    { open: 42, close: 49 },
+  'yellow':   { open: 43, close: 49 },
+  'blue':     { open: 44, close: 49 },
+  'magenta':  { open: 45, close: 49 },
+  'cyan':     { open: 46, close: 49 },
+  'white':    { open: 47, close: 49 },
+};
+
 function sayImpl(prefix) {
   if (!prefix) {
     return console.error;
@@ -512,11 +523,19 @@ function wordValue(word) {
   return hash(word, 'sha256')[0] & 0xF;
 }
 
-function colorize(text, color) {
+function isColorName(name) {
+  return Object.keys(colors).indexOf(name) !== -1;
+}
+
+function colorize(text, color, table) {
+  if (!table) {
+    table = colors;
+  }
+
   var open  = '';
   var close = '';
 
-  var obj = colors[color];
+  var obj = table[color];
 
   if (obj) {
     open  = obj.open;
@@ -524,6 +543,18 @@ function colorize(text, color) {
   }
 
   return '\u001b[' + open + 'm' + text + '\u001b[' + close + 'm';
+}
+
+function stylize(text, style) {
+  var props = style && style.match(/([^\s]+)/g) || [];
+
+  var colorProps = props.filter(isColorName);
+
+  // Foreground and background colors respectively.
+  text = colorize(text, colorProps[0]);
+  text = colorize(text, colorProps[1], backgroundColors);
+
+  return text;
 }
 
 function printVersion() {
@@ -924,7 +955,7 @@ function encode(message, secret, password, options) {
               // %s/{\[s\/\([^\/]\+\)\/[^\/]\+\/\]}/\1/g
 
             } else if (options.highlight) {
-              replacement = colorize(replacement, options.highlight);
+              replacement = stylize(replacement, options.highlight);
             }
 
             if (offset < buffer.length) {
@@ -1045,7 +1076,7 @@ function query(q, options) {
 
   return data.map(function (record) {
     return [
-      colorize(record.typo, options.highlight),
+      stylize(record.typo, options.highlight),
       record.value.toString(16).toUpperCase(),
       record.score.toFixed(4),
     ].join('\t');
