@@ -231,14 +231,6 @@ function hash(message, algorithm) {
 }
 
 function stringDistance(s, t) {
-  if (s.length === 0) {
-    return t.length;
-  } else if (t.length === 0) {
-    return s.length;
-  } else if (s === t) {
-    return 0;
-  }
-
   var a = new Array(t.length + 1);
   for (var x = 0; x < a.length; x++) {
     a[x] = x;
@@ -1086,7 +1078,7 @@ function run() {
 
     if (unknown.slice(0, 2) === '--') {
       // Find and display close matches using Levenshtein distance.
-      var closeMatches = findCloseMatches(unknown.slice(2),
+      var closeMatches = findCloseMatches(unknown.slice(2).toLowerCase(),
           Object.keys(defaultOptions),
           2);
 
