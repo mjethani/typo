@@ -580,7 +580,7 @@ function stylize(text, style) {
 }
 
 function printVersion() {
-  console.log(_name + ' v' + pkg.version + ' by ' + pkg.author.name);
+  console.log(_name + ' v' + pkg.version);
 }
 
 function printHelp() {
