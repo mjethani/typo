@@ -1071,14 +1071,14 @@ function run() {
   var seeHelp = os.EOL + os.EOL + "See '" + _name + " --help'."
       + os.EOL;
 
-  var unknown = options['!?'][0];
+  var unknownOption = options['!?'][0];
 
-  if (unknown) {
-    console.error("Unknown option '" + unknown + "'." + seeHelp);
+  if (unknownOption) {
+    console.error("Unknown option '" + unknownOption + "'." + seeHelp);
 
-    if (unknown.slice(0, 2) === '--') {
+    if (unknownOption.slice(0, 2) === '--') {
       // Find and display close matches using Levenshtein distance.
-      var closeMatches = findCloseMatches(unknown.slice(2).toLowerCase(),
+      var closeMatches = findCloseMatches(unknownOption.slice(2).toLowerCase(),
           Object.keys(defaultOptions),
           2);
 
