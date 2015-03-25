@@ -35,6 +35,19 @@ var wordPattern = /^'?[A-Za-z]+-?[A-Za-z]+'?[A-Za-z]'?$/;
 
 var say = function () {};
 
+var colors = {
+  'black':    { open: 30, close: 39 },
+  'red':      { open: 31, close: 39 },
+  'green':    { open: 32, close: 39 },
+  'yellow':   { open: 33, close: 39 },
+  'blue':     { open: 34, close: 39 },
+  'magenta':  { open: 35, close: 39 },
+  'cyan':     { open: 36, close: 39 },
+  'white':    { open: 37, close: 39 },
+  'gray':     { open: 90, close: 39 },
+  'grey':     { open: 90, close: 39 },
+};
+
 function sayImpl(prefix) {
   if (!prefix) {
     return console.error;
@@ -499,6 +512,20 @@ function wordValue(word) {
   return hash(word, 'sha256')[0] & 0xF;
 }
 
+function colorize(text, color) {
+  var open  = '';
+  var close = '';
+
+  var obj = colors[color];
+
+  if (obj) {
+    open  = obj.open;
+    close = obj.close;
+  }
+
+  return '\u001b[' + open + 'm' + text + '\u001b[' + close + 'm';
+}
+
 function printVersion() {
   console.log(_name + ' v' + pkg.version + ' by ' + pkg.author.name);
 }
@@ -895,6 +922,9 @@ function encode(message, secret, password, options) {
 
               // Once you're satisfied with the result, open in Vim and do:
               // %s/{\[s\/\([^\/]\+\)\/[^\/]\+\/\]}/\1/g
+
+            } else if (options.highlight) {
+              replacement = colorize(replacement, options.highlight);
             }
 
             if (offset < buffer.length) {
@@ -1048,6 +1078,7 @@ function run() {
     'deterministic':  false,
     'rulesets':       null,
     'ruleset-file':   null,
+    'highlight':      null,
     'verbose':        false,
     'query':          null,
   };
@@ -1132,7 +1163,8 @@ function run() {
   // Valid options for each mode.
   if (encodeMode) {
     validOpts = 'verbose secret file output-file format password'
-      + ' authenticated nosalt markup deterministic rulesets ruleset-file';
+      + ' authenticated nosalt markup deterministic rulesets ruleset-file'
+      + ' highlight';
   } else if (decodeMode) {
     validOpts = 'verbose decode file original-file format password'
       + ' authenticated nosalt markup';
@@ -1189,6 +1221,10 @@ function run() {
     });
   }
 
+  var isTerminal = function () {
+    return !options['output-file'] && process.stdout.isTTY;
+  };
+
   say('Hi!');
 
   chain([
@@ -1239,7 +1275,14 @@ function run() {
 
           say('Encoding');
 
-          var output = encode(message, options.secret, password, options);
+          var encodeOptions = Object.create(options);
+
+          if (!isTerminal()) {
+            encodeOptions.highlight = null;
+          }
+
+          var output = encode(message, options.secret, password,
+              encodeOptions);
 
           if (!output) {
             throw '';
@@ -1284,7 +1327,7 @@ function run() {
     function (finalResult) {
       say('Almost done!');
 
-      if (!encodeMode || !options['output-file'] && process.stdout.isTTY) {
+      if (!encodeMode || isTerminal()) {
         if (finalResult) {
           console.log(finalResult);
         }
