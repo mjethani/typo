@@ -141,21 +141,6 @@ function dieOnExit() {
   process.exitCode = 1;
 }
 
-function printOutput(string, filename) {
-  if (string != null) {
-    if (filename) {
-      say('Writing output to file ' + filename);
-
-      fs.writeFileSync(filename, string);
-
-    } else {
-      say('Writing output to stdout');
-
-      process.stdout.write(string);
-    }
-  }
-}
-
 function logError(error) {
   if (error) {
     console.error(error.toString());
@@ -436,6 +421,34 @@ function dumpFile(filename, stream, transformer) {
   fs.createReadStream(filename, { encoding: 'utf8' }).pipe(stream);
 }
 
+function readInput(filename, callback) {
+  if (filename) {
+    say('Reading input from file ' + filename);
+
+    slurpFile(filename, callback);
+
+  } else {
+    say('Reading input from stdin');
+
+    slurp(callback);
+  }
+}
+
+function writeOutput(string, filename) {
+  if (string != null) {
+    if (filename) {
+      say('Writing output to file ' + filename);
+
+      fs.writeFileSync(filename, string);
+
+    } else {
+      say('Writing output to stdout');
+
+      process.stdout.write(string);
+    }
+  }
+}
+
 function prompt(label, quiet, callback) {
   if (!process.stdin.isTTY || !process.stdout.isTTY) {
     throw new Error('No TTY.');
@@ -700,19 +713,6 @@ function readPassword(password, callback) {
     prompt('Password: ', true, callback);
   } else {
     async(callback, null, typeof password === 'string' ? password : null);
-  }
-}
-
-function readMessage(filename, callback) {
-  if (filename) {
-    say('Reading input from file ' + filename);
-
-    slurpFile(filename, callback);
-
-  } else {
-    say('Reading input from stdin');
-
-    slurp(callback);
   }
 }
 
@@ -1288,7 +1288,7 @@ function run() {
 
       function (password, callback) {
         if (encodeMode || decodeMode) {
-          readMessage(options.file, function (error, message) {
+          readInput(options.file, function (error, message) {
             callback(error, password, message);
           });
 
@@ -1386,7 +1386,7 @@ function run() {
           console.log(finalResult);
         }
       } else {
-        printOutput(finalResult, options['output-file']);
+        writeOutput(finalResult, options['output-file']);
       }
 
       say('Goodbye');
