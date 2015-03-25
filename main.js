@@ -60,12 +60,12 @@ var backgroundColors = {
 };
 
 var textStyles = {
-  'bold':     { open:  1, close: 22 },
-  'dim':      { open:  2, close: 22 },
-  'italic':   { open:  3, close: 23 },
-  'underline':  { open:  4, close: 24 },
-  'inverse':  { open:  7, close: 27 },
-  'hidden':   { open:  8, close: 28 },
+  'bold':           { open:  1, close: 22 },
+  'dim':            { open:  2, close: 22 },
+  'italic':         { open:  3, close: 23 },
+  'underline':      { open:  4, close: 24 },
+  'inverse':        { open:  7, close: 27 },
+  'hidden':         { open:  8, close: 28 },
   'strikethrough':  { open:  9, close: 29 },
 };
 
@@ -615,6 +615,20 @@ function printUsage() {
   dumpFile(path.join(__dirname, 'default.help'), process.stderr, x);
 }
 
+function printCloseMatches(string, candidateList) {
+  var closeMatches = findCloseMatches(string, candidateList, 2);
+
+  if (closeMatches.length > 1) {
+    console.error('Did you mean one of these?');
+  } else if (closeMatches.length === 1) {
+    console.error('Did you mean this?');
+  }
+
+  closeMatches.forEach(function (v) {
+    console.error('\t' + v);
+  });
+}
+
 function loadDictionary() {
   say('Loading dictionary');
 
@@ -1155,26 +1169,14 @@ function run() {
   var seeHelp = os.EOL + os.EOL + "See '" + _name + " --help'."
       + os.EOL;
 
-  var unknownOption = options['!?'][0];
+  if (options['!?'].length > 0) {
+    var unknown = options['!?'][0];
 
-  if (unknownOption) {
-    console.error("Unknown option '" + unknownOption + "'." + seeHelp);
+    console.error("Unknown option '" + unknown + "'." + seeHelp);
 
-    if (unknownOption.slice(0, 2) === '--') {
+    if (unknown.slice(0, 2) === '--') {
       // Find and display close matches using Levenshtein distance.
-      var closeMatches = findCloseMatches(unknownOption.slice(2).toLowerCase(),
-          Object.keys(defaultOptions),
-          2);
-
-      if (closeMatches.length > 1) {
-        console.error('Did you mean one of these?');
-      } else if (closeMatches.length === 1) {
-        console.error('Did you mean this?');
-      }
-
-      closeMatches.forEach(function (v) {
-        console.error('\t' + v);
-      });
+      printCloseMatches(unknown.slice(2), Object.keys(defaultOptions));
     }
 
     die();
