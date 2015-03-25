@@ -1096,6 +1096,8 @@ function run() {
     'version':        false,
     'help':           false,
     'license':        false,
+    'highlight':      null,
+    'verbose':        false,
     'secret':         null,
     'decode':         false,
     'file':           null,
@@ -1109,8 +1111,6 @@ function run() {
     'deterministic':  false,
     'rulesets':       null,
     'ruleset-file':   null,
-    'highlight':      null,
-    'verbose':        false,
     'query':          null,
   };
 
@@ -1193,14 +1193,13 @@ function run() {
 
   // Valid options for each mode.
   if (encodeMode) {
-    validOpts = 'verbose secret file output-file format password'
-      + ' authenticated nosalt markup deterministic rulesets ruleset-file'
-      + ' highlight';
+    validOpts = 'highlight verbose secret file output-file format password'
+      + ' authenticated nosalt markup deterministic rulesets ruleset-file';
   } else if (decodeMode) {
-    validOpts = 'verbose decode file original-file format password'
+    validOpts = 'highlight verbose decode file original-file format password'
       + ' authenticated nosalt markup';
   } else if (queryMode) {
-    validOpts = 'verbose query rulesets ruleset-file highlight';
+    validOpts = 'highlight verbose query rulesets ruleset-file';
   }
 
   validOpts = validOpts && validOpts.split(' ') || [];
