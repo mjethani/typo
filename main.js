@@ -1023,7 +1023,7 @@ function decode(message, password, options) {
       options.authenticated);
 }
 
-function query(q) {
+function query(q, options) {
   say('Generating typos');
 
   var data = generateTypos(q || '').map(function (typo) {
@@ -1045,7 +1045,7 @@ function query(q) {
 
   return data.map(function (record) {
     return [
-      record.typo,
+      colorize(record.typo, options.highlight),
       record.value.toString(16).toUpperCase(),
       record.score.toFixed(4),
     ].join('\t');
@@ -1169,7 +1169,7 @@ function run() {
     validOpts = 'verbose decode file original-file format password'
       + ' authenticated nosalt markup';
   } else if (queryMode) {
-    validOpts = 'verbose query rulesets ruleset-file';
+    validOpts = 'verbose query rulesets ruleset-file highlight';
   }
 
   validOpts = validOpts && validOpts.split(' ') || [];
@@ -1311,7 +1311,7 @@ function run() {
         } else if (queryMode) {
           say('Query: ' + options.query);
 
-          callback(null, query(options.query));
+          callback(null, query(options.query, options));
         }
       }
     ],
