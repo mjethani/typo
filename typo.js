@@ -623,6 +623,15 @@ function stylize(text, style) {
   return text;
 }
 
+function helpAvailable() {
+  try {
+    fs.accessSync(path.join(__dirname, 'default.help'));
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
 function printVersion() {
   console.log(_name + ' v' + _version);
 }
@@ -644,6 +653,11 @@ function printSource(signed) {
 }
 
 function printUsage() {
+  if (!helpAvailable()) {
+    // Worst case.
+    return;
+  }
+
   var cut = false;
   var x = new stream.Transform({ decodeStrings: false });
   x._transform = function (chunk, encoding, callback) {
@@ -1261,6 +1275,10 @@ function run() {
   }
 
   if (options.help) {
+    if (!helpAvailable()) {
+      die('No help available.');
+    }
+
     printHelp();
     return;
   }
