@@ -1,5 +1,5 @@
 /*  ----------------------------------------------------------------------------
- *  typo v0.4.5
+ *  typo v0.4.6
  *  
  *  Hide secret information in typographical errors
  *  
@@ -39,7 +39,7 @@ var readline = require('readline');
 var stream   = require('stream');
 
 var _name    = 'typo';
-var _version = '0.4.5';
+var _version = '0.4.6';
 
 var dictionary = {};
 
