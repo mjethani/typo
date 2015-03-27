@@ -44,7 +44,7 @@ var _version = '0.4.5';
 var dictionary = {};
 
 var rules = {};
-var rulesetOrder = 'qwerty misspelling grammatical'.split(' ');
+var rulesetOrder = [];
 
 var wordCharacter = /[A-Za-z'-]/;
 
@@ -726,6 +726,15 @@ function loadRules(name) {
   return loadRulesetFile(path.join(__dirname, name + '.rules'), name);
 }
 
+function rulesetAvailable(name) {
+  try {
+    fs.accessSync(path.join(__dirname, name + '.rules'));
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
 function loadRulesets(spec, filename) {
   if (filename) {
     rulesetOrder.push('custom');
@@ -737,6 +746,17 @@ function loadRulesets(spec, filename) {
   } else {
     if (spec != null) {
       rulesetOrder = spec.match(/([^ ,]+)/g) || [];
+
+    } else {
+      rulesetOrder.push('qwerty');
+
+      if (rulesetAvailable('misspelling')) {
+        rulesetOrder.push('misspelling');
+      }
+
+      if (rulesetAvailable('grammatical')) {
+        rulesetOrder.push('grammatical');
+      }
     }
 
     rulesetOrder.forEach(loadRules);
