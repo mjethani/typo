@@ -4,19 +4,19 @@
 Version: GnuPG/MacGPG2 v2.0.22 (Darwin)
 Comment: GPGTools - https://gpgtools.org
 
-iQIcBAABCgAGBQJVFTUVAAoJEPvclVzmt0MDxBAQANed75DRtup9KnSdEvRQ6L8H
-kqoYEse3HGJir57/N5zq3RYr9r06WfZ4Ae+O/NW3P/eEIzb1qklKCSgfbQALBY9t
-AoxjBwk57MVKq4RjjERMo5IUegvJEGf7cBrzfLmoWtxkT746S86p0DOUb/KS6LbE
-OIBqKm2ssewv/Ub7gIK7jG104MH7IMF3WT4lHpLKf70P58r618SerlGEnBmsZe+l
-WWQbVXJZKlT5WfAgLAK3lcUedzncOzwijPOOtmc8ucLaV3pe7TTfuIb49sSM21Bu
-wROUy7fEEbmFdQvOjXUvtaNTWvfGG1V8VbogVBJntU5Ym+iHvjM33lgOJbvdIimX
-tu070c6kSIIxGBjzxMFqOt8WXIDNoBbcwKfZLhbUwmQ3esbMSCXbNPaaDY66p7C7
-O1WhSO/SgYAmi42HWRM2PR0dK1meDrDVQOFZa4BhfgD/Ojb/4QUJf5IiFEqSdwWT
-RVrN3b28DWC2LRU8RmvwMDp53sCw8feHlMzG9ZVvlO/qQfd08J5p9h5m6LwDipK9
-WU/TwOVvzysmFh7555ljTssPyKErJkpk+fatbQAhRZEsH9isGE9NeVZS2eF0w5XQ
-umlAIu4y4f3F13MjgOovKl4Ooe9oH0BvnVEHkzmie4URjcTnhuFNxiTB41KQTtrW
-Acx+Wr51/kg1JEI5gPMe
-=bNHW
+iQIcBAABCgAGBQJVFZ8ZAAoJEPvclVzmt0MDCNAP/3uWfsBxA61S3Wn5ShzNcyT5
+7axH6pFN5MADYUkdgJktApDcUGqDCu74a3w/X44gg1T/8sxrQk2o5bOdiK3xwBgZ
+YGx+wLper6iVsx/PQvKJ11KpjfgkPMquLQGxHs6KoS0cFUf60plRCp5Fg+OCqvKH
+Q/i5KsSZrkobRKRBb1ePx5+K9Og2HyU3+jfNRl9d2ynqALqbG9BihBJQLEOrZaJa
+qn9vtinNeKO/J6atFAFi8x5u94ZCbPHP3glpp9lYKE3uLQE7+WL0fdpI3oYQpp/0
++yjx4wZsGHXjwC7mIJIwZI17CCe48O5/Apvebp7aN4e44jKgpwfjpYT6HpvVaEUh
+dn2q+G1wE/6Pgiy6GmQPNZEDblj+4Lat2+BV0gwW3Jnug90e4OXa4gY9wObs3he7
+kAFmDXhiEuvFUd/gZyUxvkOh4jJTB3gi7D7vHHiQ0wAQ1ecE9v1yjKbfNX75xHSa
+SmpXdh3YY02ch4SHyIgzsYsJ/OLqmOb1juh4RM3wnkJRKZO41kDTtAkThqSYnlz8
+4gEBbr3Ss46qUtnl8GxZUTF+31yNa797he2CjYslb1wJgdyHf3kd1T3t0FTXoOyj
+PGGnXcV+k7WNolK19KcSRpcgEoYuf7INUTyGMy+clI8rsXTEmJjWxfkiaFJRIisw
+rhviJGsW2iA0kc7ONNq4
+=XF7H
 -----END PGP SIGNATURE-----
 
 ```
@@ -30,21 +30,21 @@ Acx+Wr51/kg1JEI5gPMe
 ```
 size   exec  file                 contents                                                                                                                         
              ./                                                                                                                                                    
-20             .gitignore         5af970b8c824e11ef0ce0ad42b8d2ba627424abe9d1f5b995c34fab34bfdf438                                                                 
+14             .gitignore         227db518858edeb0c6428134d2b802bd357e1a5793c337aa2766eda272de46ba                                                                 
 732            LICENSE            e7fa0c5707aa3eae23e841a73ea57cda21f3bd87b90ba3ea254ca5bdec29d386                                                                 
-1053           README.md          9fd2fc0a577b097cc7bf97bacd121ee71849b6919f67c69a3fddcb3f9c541fb5                                                                 
+1053           README.md          8a84d10f3349de77fc74c3856fbea690398825eb565eed86fa5f5c18bd7ddd4a                                                                 
 3988           default.help       fba066c8a860aa31354dee6214dd5101b5f79be84efc66d9b212bdc933a624b4                                                                 
 14310          dictionary         c68088ec46bb71d60447e956c4bdf1c3801c97791786fdd45522bb5e8a253163                                                                 
 921            grammatical.rules  0823880f62bd7f2372efd2f43bc36ddb4d2d6919f892e7520e1ee8f9b443400c                                                                 
 56             keyboard           c8431394f7812b8022fdcd86bd359056a26e538fac4446ab1e908753e1fa1a89                                                                 
-33471          main.js            9c44f17f4cc51e6681e6adced12bc211f766a6d8eb893b594d4f08fcf6014da9                                                                 
 44032          misspelling.rules  4bdbfbfe2abfabafae0f8af4c29e2d0a5d98a2bb9c234749dbbf62395b378862                                                                 
-722            package.json       54428c51c4933366e64f2de9bb6b3e4616f9def1a141d66a2cbd7dc76f876f95                                                                 
+797            package.json       849fd7ffa5ebe4ba37945016ac677b1c28cda3dc9681c5542086b5a94b3e4e8b                                                                 
 12516          qwerty.rules       7bdbb9b8cd8ab58e72887e084976689b00ab12862445d4f3fac51c3bbaf23364                                                                 
 54908          screenshot.png     a6171e315392ee0d98641f3bcd7f05636fb988d5b5a15b49c2cdb537cb8805da|7a555df6a99c038be00da6d0b68a7b7dba44c010f760d466528658f61fe70404
 26341          security.png       1dfd9f6409fccd5316779b99b835fefd20bd0b57b8bcecc8156c5798af00e9eb|d06142c796249dc95470f5420ef4316a369f2ee159bb12c403768546052c20ad
-47     x       typo               ad1d918f07b08400ddd47b71001b6ee4928c5f6bbe50ddb75cb1d024d47dcfbe                                                                 
-15174          typo.js.asc        4cd48084794dab148b320b4f40dc8d73a9e735c283e02609a00fb3b633673633                                                                 
+50     x       typo               3fb2a836da633356ca2b6cc801613e408277ab444a5d3bc85d5be83af8e8f68a                                                                 
+36029          typo.js            6e5f7a4d22e16664001cb664363812bc20d83b8638c134f8b60da040bd2b5ea9                                                                 
+16567          typo.js.asc        ce7dd35e2454a5badc697796578aacca7c4ac84d929f6e2b2d6a62ee4e87118f                                                                 
 8407           variant.rules      df6bb99bde97f43b43352eaa8e4d94a4c8f385cd69c74dbacce3701da34425b4                                                                 
 ```
 
