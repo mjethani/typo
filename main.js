@@ -654,7 +654,7 @@ function loadDictionary() {
     console.warn('WARNING: No dictionary available.');
   }
 
-  var lines = data.toString().split('\n');
+  var lines = data.split('\n');
 
   lines.forEach(function (word) {
     trigrams(word).forEach(function (v) {
