@@ -298,10 +298,24 @@ function findCloseMatches(string, candidateList, distanceThreshold) {
   }
 
   var matches = candidateList.map(function (candidate) {
+    // Split candidate into individual components. e.g. 'output-file' becomes a
+    // list containing 'output', 'file', and 'output-file'.
+    var candidateWords = candidate.split('-');
+    if (candidateWords.length > 1) {
+      candidateWords.push(candidate);
+    }
+
+    var distance = candidateWords.reduce(function (distance, word) {
+      // Take the lowest distance.
+      return Math.min(distance, stringDistance(string, word));
+    },
+    Infinity);
+
     return {
       candidate: candidate,
-      distance:  stringDistance(string, candidate)
+      distance:  distance
     };
+
   }).filter(function (match) {
     return match.distance <= distanceThreshold;
   });
