@@ -20,9 +20,8 @@ var path     = require('path');
 var readline = require('readline');
 var stream   = require('stream');
 
-var pkg      = require('./package');
-
-var _name = 'typo';
+var _name    = 'typo';
+var _version = '0.4.4';
 
 var dictionary = {};
 
@@ -593,7 +592,7 @@ function stylize(text, style) {
 }
 
 function printVersion() {
-  console.log(_name + ' v' + pkg.version);
+  console.log(_name + ' v' + _version);
 }
 
 function printHelp() {
@@ -645,7 +644,16 @@ function printCloseMatches(string, candidateList) {
 function loadDictionary() {
   say('Loading dictionary');
 
-  var data = slurpFileSync(path.join(__dirname, 'dictionary'));
+  var data = '';
+
+  try {
+    data = slurpFileSync(path.join(__dirname, 'dictionary'));
+  } catch (error) {
+    // Proceed without a dictionary. It's only required for keyboard (QWERTY)
+    // rules.
+    console.warn('WARNING: No dictionary available.');
+  }
+
   var lines = data.toString().split('\n');
 
   lines.forEach(function (word) {
