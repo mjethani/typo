@@ -6,11 +6,25 @@
  *  Author:  Manish Jethani (manish.jethani@gmail.com)
  *  Date:    March 27, 2015
  *  
- *  See 'typo --help'
- *  
  *  PGP: 57F8 9653 7461 1F9C EEF9 578B FBDC 955C E6B7 4303
  *  
+ *  Bitcoin: 1NxChtv1R6q6STF9rq1BZsZ4jUKDh5MsQg
+ *  
  *  http://manishjethani.com/
+ *  
+ *  Copyright (c) 2015 Manish Jethani
+ *  
+ *  Permission to use, copy, modify, and/or distribute this software for any
+ *  purpose with or without fee is hereby granted, provided that the above
+ *  copyright notice and this permission notice appear in all copies.
+ *  
+ *  THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ *  WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ *  MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+ *  SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ *  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ *  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+ *  IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *  ------------------------------------------------------------------------- */
 
 // NOTE: A signed version of this file is included in the package as

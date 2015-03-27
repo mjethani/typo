@@ -12,7 +12,7 @@
     "typo": "./typo"
   },
   "scripts": {
-    "sign": "keybase sign main.js -o typo.js.asc && keybase dir sign"
+    "sign": "keybase sign typo.js && keybase dir sign"
   },
   "keywords": [
     "steganography",
