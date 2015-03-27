@@ -762,7 +762,11 @@ function loadRulesets(spec, filename) {
       rulesetOrder = spec.match(/([^ ,]+)/g) || [];
 
     } else {
-      rulesetOrder.push('qwerty');
+      if (rulesetAvailable('qwerty')) {
+        rulesetOrder.push('qwerty');
+      } else {
+        console.warn('WARNING: QWERTY rules not available.');
+      }
 
       if (rulesetAvailable('misspelling')) {
         rulesetOrder.push('misspelling');
@@ -1409,6 +1413,10 @@ function run() {
           loadDictionary();
 
           loadRulesets(options.rulesets, options['ruleset-file']);
+
+          if (Object.keys(rules).length === 0) {
+            throw new Error('0 rules.');
+          }
 
           if (encodeMode && !options.deterministic) {
             say('Shuffling rules');
