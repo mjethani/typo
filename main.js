@@ -13,6 +13,10 @@
  *  http://manishjethani.com/
  *  ------------------------------------------------------------------------- */
 
+// NOTE: A signed version of this file is included in the package as
+// typo.js.asc. It can be run as a standalone Node.js program without any
+// dependencies.
+
 var crypto   = require('crypto');
 var fs       = require('fs');
 var os       = require('os');
@@ -603,6 +607,14 @@ function printLicense() {
   dumpFile(path.join(__dirname, 'LICENSE'));
 }
 
+function printSource(signed) {
+  if (signed) {
+    dumpFile(path.join(__dirname, 'typo.js.asc'));
+  } else {
+    dumpFile(__filename);
+  }
+}
+
 function printUsage() {
   var cut = false;
   var x = new stream.Transform({ decodeStrings: false });
@@ -1140,6 +1152,8 @@ function run() {
     'version':        false,
     'help':           false,
     'license':        false,
+    'view-source':    false,
+    'signed':         false,
     'highlight':      null,
     'verbose':        false,
     'secret':         null,
@@ -1210,6 +1224,11 @@ function run() {
 
   if (options.license) {
     printLicense();
+    return;
+  }
+
+  if (options['view-source']) {
+    printSource(options.signed);
     return;
   }
 
