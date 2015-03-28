@@ -3,6 +3,8 @@ usage: typo <secret> [--file=<file>] [--output-file=<output-file>]
             [--authenticated] [--nosalt]
             [--markup] [--deterministic]
             [--rulesets=<ruleset>[,...]] [--ruleset-file=<ruleset-file>]
+            [--keyboard-file=<keyboard-file>]
+            [--dictionary-file=<dictionary-file>]
             [--verbose]
        typo --decode --original-file=<original-file>
             [--file=<file>] [--output-file=<output-file>]
@@ -81,6 +83,31 @@ These are the options:
       This is a file containing tab-separated values. Each row is a rule. The
       first field is the word pattern to match, the second field is the
       replacement text.
+
+  --keyboard-file=<keyboard-file>
+      The keyboard file to use for typo generation.
+
+      This is a file containing the keyboard layout to emulate. By default the
+      program uses the standard QWERTY layout.
+
+        1234567890-= 
+        QWERTYUIOP[]\
+        ASDFGHJKL;'  
+        ZXCVBNM,./   
+
+      A Dvorak.keyboard file is included in the package.
+
+  --dictionary-file=<dictionary-file>
+      The dictionary file to use for typo generation.
+
+      This is a file containing a sampling of typical words in the language,
+      one on each line. It is used to evaluate the plausibility of an
+      auto-generated typing error. If a trigram (three-letter sequence) appears
+      frequently in the language's lexicon, it may be more likely to appear in
+      a typo.
+
+      The default built-in dictionary comprises about 1,500 words of the
+      English language.
 
   --verbose, -v
       Verbose mode.
