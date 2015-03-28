@@ -717,6 +717,64 @@ function loadDictionary() {
   });
 }
 
+function loadKeyboard() {
+  say('Loading keyboard');
+
+  var keyboard = [];
+
+  var QWERTY = '1234567890-= \nQWERTYUIOP[]\\\nASDFGHJKL;\'  \nZXCVBNM,./   ';
+
+  QWERTY.split('\n').forEach(function (row) {
+    var keys = row.split('');
+    if (keys.length > 0) {
+      keyboard.push(keys);
+    }
+  });
+
+  var ruleset = [];
+
+  var addRule = function (pattern, substitution, weight) {
+    var n = weight || 1;
+    for (var i = 0; i < n; i++) {
+      ruleset.push({ re: new RegExp(pattern), sub: substitution });
+    }
+  }
+
+  for (var i = 0; i < keyboard.length; i++) {
+    for (var j = 0; j < keyboard[i].length; j++) {
+      var c = (keyboard[i][j] || '').toLowerCase();
+
+      if (c.match(/[a-z]/)) {
+        for (var k = j - 1; k <= j + 1; k += 2) {
+          var x = (keyboard[i][k] || '').toLowerCase();
+
+          if (x.match(/[a-z]/)) {
+            var p = '([^' + c + x + '][^' + c + x + '])' + c
+                  + '([^' + c + x + '][^' + c + x + '])';
+
+            // Insertions (aka "fat fingers")
+            addRule(p, '$1' + c + x + '$2', 4);
+            addRule(p, '$1' + x + c + '$2');
+
+            // Substitutions (wrong key)
+            addRule(p, '$1' + x     + '$2');
+          }
+        }
+
+        // Transpositions
+        addRule('([^' + c + '])' + c + '([a-z])(?!\\2)', '$1$2' + c, 4);
+
+        // Shift typos (e.g. "THe")
+        addRule('^([A-Z])' + c, '$1' + c.toUpperCase());
+      }
+    }
+  }
+
+  rules['keyboard'] = ruleset;
+
+  rulesetOrder.push('keyboard');
+}
+
 function loadRulesetFile(filename, alias) {
   var data = slurpFileSync(filename);
   var records = parseTabularData(data);
@@ -751,7 +809,7 @@ function rulesetAvailable(name) {
 
 function loadRulesets(spec, filename) {
   if (filename) {
-    rulesetOrder.push('custom');
+    rulesetOrder = 'custom'.split(' ');
 
     say('Loading ruleset file ' + filename);
 
@@ -762,12 +820,6 @@ function loadRulesets(spec, filename) {
       rulesetOrder = spec.match(/([^ ,]+)/g) || [];
 
     } else {
-      if (rulesetAvailable('qwerty')) {
-        rulesetOrder.push('qwerty');
-      } else {
-        console.warn('WARNING: QWERTY rules not available.');
-      }
-
       if (rulesetAvailable('misspelling')) {
         rulesetOrder.push('misspelling');
       }
@@ -839,7 +891,7 @@ function generateTypos(word) {
 
           // For QWERTY typos, include the typo only if it passes the
           // 'plausibility' test.
-          || (name === 'qwerty' && !checkPlausibility(mutation))
+          || (name === 'keyboard' && !checkPlausibility(mutation))
           ) {
         return;
       }
@@ -1411,6 +1463,8 @@ function run() {
       function (password, message, original, callback) {
         if (encodeMode || queryMode) {
           loadDictionary();
+
+          loadKeyboard();
 
           loadRulesets(options.rulesets, options['ruleset-file']);
 
