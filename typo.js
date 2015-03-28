@@ -41,6 +41,15 @@ var stream   = require('stream');
 var _name    = 'typo';
 var _version = '0.4.7';
 
+// -------------
+// 1234567890-= 
+// QWERTYUIOP[]\
+// ASDFGHJKL;'  
+// ZXCVBNM,./   
+// -------------
+
+var QWERTY = '1234567890-= \nQWERTYUIOP[]\\\nASDFGHJKL;\'  \nZXCVBNM,./   ';
+
 var dictionary = {};
 
 var rules = {};
@@ -712,15 +721,6 @@ function loadKeyboard(filename) {
 
   var keyboard = [];
 
-  // -------------
-  // 1234567890-= 
-  // QWERTYUIOP[]\
-  // ASDFGHJKL;'  
-  // ZXCVBNM,./   
-  // -------------
-
-  var QWERTY = '1234567890-= \nQWERTYUIOP[]\\\nASDFGHJKL;\'  \nZXCVBNM,./   ';
-
   var layout = filename ? slurpFileSync(filename) : QWERTY;
 
   layout.split('\n').forEach(function (row) {
@@ -1285,6 +1285,7 @@ function run() {
     'license':         false,
     'view-source':     false,
     'signed':          false,
+    'print-keyboard':  false,
     'highlight':       null,
     'verbose':         false,
     'secret':          null,
@@ -1366,6 +1367,11 @@ function run() {
 
   if (options['view-source']) {
     printSource(options.signed);
+    return;
+  }
+
+  if (options['print-keyboard']) {
+    console.log(QWERTY);
     return;
   }
 
