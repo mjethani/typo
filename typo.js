@@ -695,16 +695,10 @@ function printCloseMatches(string, candidateList) {
   });
 }
 
-function loadDictionary() {
-  say('Loading dictionary');
+function loadDictionary(filename) {
+  say('Loading dictionary' + (filename ? ' file ' + filename : ''));
 
-  var lines = null;
-
-  try {
-    lines = slurpFileSync(path.join(__dirname, 'dictionary')).split('\n');
-  } catch (error) {
-    lines = WORDS;
-  }
+  var lines = filename ? slurpFileSync(filename).split('\n') : WORDS;
 
   lines.forEach(function (word) {
     trigrams(word).forEach(function (v) {
@@ -714,7 +708,7 @@ function loadDictionary() {
 }
 
 function loadKeyboard(filename) {
-  say('Loading keyboard ' + (filename || 'QWERTY'));
+  say('Loading keyboard' + (filename ? ' file ' + filename : ''));
 
   var keyboard = [];
 
@@ -1272,28 +1266,29 @@ function run() {
   }
 
   var defaultOptions = {
-    'version':        false,
-    'help':           false,
-    'license':        false,
-    'view-source':    false,
-    'signed':         false,
-    'highlight':      null,
-    'verbose':        false,
-    'secret':         null,
-    'decode':         false,
-    'file':           null,
-    'output-file':    null,
-    'original-file':  null,
-    'format':         null,
-    'password':       false,
-    'authenticated':  false,
-    'nosalt':         false,
-    'markup':         false,
-    'deterministic':  false,
-    'rulesets':       null,
-    'ruleset-file':   null,
-    'keyboard-file':  null,
-    'query':          null,
+    'version':         false,
+    'help':            false,
+    'license':         false,
+    'view-source':     false,
+    'signed':          false,
+    'highlight':       null,
+    'verbose':         false,
+    'secret':          null,
+    'decode':          false,
+    'file':            null,
+    'output-file':     null,
+    'original-file':   null,
+    'format':          null,
+    'password':        false,
+    'authenticated':   false,
+    'nosalt':          false,
+    'markup':          false,
+    'deterministic':   false,
+    'rulesets':        null,
+    'ruleset-file':    null,
+    'keyboard-file':   null,
+    'dictionary-file': null,
+    'query':           null,
   };
 
   var shortcuts = {
@@ -1374,13 +1369,13 @@ function run() {
   if (encodeMode) {
     validOpts = 'highlight verbose secret file output-file format password'
       + ' authenticated nosalt markup deterministic rulesets ruleset-file'
-      + ' keyboard-file';
+      + ' keyboard-file dictionary-file';
   } else if (decodeMode) {
     validOpts = 'highlight verbose decode file original-file format password'
       + ' authenticated nosalt markup';
   } else if (queryMode) {
     validOpts = 'highlight verbose query rulesets ruleset-file'
-      + ' keyboard-file';
+      + ' keyboard-file dictionary-file';
   }
 
   validOpts = validOpts && validOpts.split(' ') || [];
@@ -1470,7 +1465,7 @@ function run() {
 
       function (password, message, original, callback) {
         if (encodeMode || queryMode) {
-          loadDictionary();
+          loadDictionary(options['dictionary-file']);
 
           loadKeyboard(options['keyboard-file']);
 
