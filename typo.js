@@ -1468,10 +1468,6 @@ function run() {
 
           loadRulesets(options.rulesets, options['ruleset-file']);
 
-          if (Object.keys(rules).length === 0) {
-            throw new Error('0 rules.');
-          }
-
           if (encodeMode && !options.deterministic) {
             say('Shuffling rules');
 
