@@ -713,14 +713,23 @@ function loadDictionary() {
   });
 }
 
-function loadKeyboard() {
-  say('Loading keyboard');
+function loadKeyboard(filename) {
+  say('Loading keyboard ' + (filename || 'QWERTY'));
 
   var keyboard = [];
 
+  // -------------
+  // 1234567890-= 
+  // QWERTYUIOP[]\
+  // ASDFGHJKL;'  
+  // ZXCVBNM,./   
+  // -------------
+
   var QWERTY = '1234567890-= \nQWERTYUIOP[]\\\nASDFGHJKL;\'  \nZXCVBNM,./   ';
 
-  QWERTY.split('\n').forEach(function (row) {
+  var layout = filename ? slurpFileSync(filename) : QWERTY;
+
+  layout.split('\n').forEach(function (row) {
     var keys = row.split('');
     if (keys.length > 0) {
       keyboard.push(keys);
@@ -1283,6 +1292,7 @@ function run() {
     'deterministic':  false,
     'rulesets':       null,
     'ruleset-file':   null,
+    'keyboard-file':  null,
     'query':          null,
   };
 
@@ -1363,12 +1373,14 @@ function run() {
   // Valid options for each mode.
   if (encodeMode) {
     validOpts = 'highlight verbose secret file output-file format password'
-      + ' authenticated nosalt markup deterministic rulesets ruleset-file';
+      + ' authenticated nosalt markup deterministic rulesets ruleset-file'
+      + ' keyboard-file';
   } else if (decodeMode) {
     validOpts = 'highlight verbose decode file original-file format password'
       + ' authenticated nosalt markup';
   } else if (queryMode) {
-    validOpts = 'highlight verbose query rulesets ruleset-file';
+    validOpts = 'highlight verbose query rulesets ruleset-file'
+      + ' keyboard-file';
   }
 
   validOpts = validOpts && validOpts.split(' ') || [];
@@ -1460,7 +1472,7 @@ function run() {
         if (encodeMode || queryMode) {
           loadDictionary();
 
-          loadKeyboard();
+          loadKeyboard(options['keyboard-file']);
 
           loadRulesets(options.rulesets, options['ruleset-file']);
 
