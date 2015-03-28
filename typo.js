@@ -733,11 +733,8 @@ function loadKeyboard(filename) {
   var ruleset = [];
 
   var addRule = function (pattern, substitution, weight) {
-    var n = weight || 1;
-    for (var i = 0; i < n; i++) {
-      ruleset.push({ re: new RegExp(pattern), sub: substitution });
-    }
-  }
+    ruleset = ruleset.concat(createRule(pattern, substitution, weight));
+  };
 
   for (var i = 0; i < keyboard.length; i++) {
     for (var j = 0; j < keyboard[i].length; j++) {
@@ -774,13 +771,30 @@ function loadKeyboard(filename) {
   rulesetOrder.push('keyboard');
 }
 
+function createRule(pattern, substitution, weight) {
+  if (arguments.length < 3) {
+    return { re: new RegExp(pattern), sub: substitution };
+  }
+
+  if (isNaN(weight = +weight)) {
+    weight = 1;
+  }
+
+  var array = [];
+  for (var i = 0; i < weight; i++) {
+    array.push(createRule(pattern, substitution));
+  }
+  return array;
+}
+
 function loadRulesetFile(filename, alias) {
   var data = slurpFileSync(filename);
   var records = parseTabularData(data);
 
-  var ruleset = records.map(function (fields) {
-    return { re: new RegExp(fields[0]), sub: fields[1] };
-  });
+  var ruleset = records.reduce(function (ruleset, fields) {
+    return ruleset.concat(createRule.apply(null, fields));
+  },
+  []);
 
   rules[alias || filename] = ruleset;
 
