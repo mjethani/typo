@@ -708,7 +708,7 @@ function loadDictionary(filename) {
 }
 
 function loadKeyboard(filename) {
-  say('Loading keyboard' + (filename ? ' file ' + filename : ''));
+  say('Loading keyboard ' + (filename ? 'file ' + filename : 'QWERTY'));
 
   var keyboard = [];
 
