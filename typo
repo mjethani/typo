@@ -1,4 +1,4 @@
 #!/usr/bin/env node
 
-require('./typo.js').run();
+require('./main').run();
 
