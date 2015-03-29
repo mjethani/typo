@@ -110,6 +110,9 @@ These are the options:
         ASDFGHJKL;'  
         ZXCVBNM,./   
 
+      If this does not match your keyboard, you can use this option to specify
+      your own layout.
+
   --dictionary-file=<dictionary-file>
       The dictionary file to use for typo generation.
 
@@ -128,7 +131,7 @@ These are the options:
       How to highlight the typos.
 
       The value must be of the format
-      '<color>[ <background-color>[ text-style]]'.
+      '<color>[ <background-color>[ text-style]]'. e.g. 'white red bold'
 
       The following colors are supported: black, red, green, yellow, blue,
       magenta, cyan, white, and gray (also grey).
