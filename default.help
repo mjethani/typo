@@ -128,7 +128,7 @@ These are the options:
       language.
 
   --highlight=<highlight>
-      How to highlight the typos.
+      How to highlight the typos on the terminal.
 
       The value must be of the format
       '<color>[ <background-color>[ text-style]]'. e.g. 'white red bold'
