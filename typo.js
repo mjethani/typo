@@ -653,12 +653,8 @@ function printLicense() {
   dumpFile(path.join(__dirname, 'LICENSE'));
 }
 
-function printSource(signed) {
-  if (signed) {
-    dumpFile(path.join(__dirname, 'typo.js.asc'));
-  } else {
-    dumpFile(__filename);
-  }
+function printSource() {
+  dumpFile(__filename);
 }
 
 function printUsage() {
@@ -792,7 +788,7 @@ function loadRulesetFile(filename, alias) {
   var records = parseTabularData(data);
 
   var ruleset = records.reduce(function (ruleset, fields) {
-    return ruleset.concat(createRule.apply(null, fields));
+    return ruleset.concat(createRule.apply(null, fields.slice(0, 2)));
   },
   []);
 
@@ -1284,8 +1280,6 @@ function run() {
     'help':            false,
     'license':         false,
     'view-source':     false,
-    'signed':          false,
-    'print-keyboard':  false,
     'highlight':       null,
     'verbose':         false,
     'secret':          null,
@@ -1338,7 +1332,8 @@ function run() {
     die();
   }
 
-  if ((options.help || options.version || options.license)
+  if ((options.help || options.version || options.license
+        || options['view-source'])
       && Object.keys(options).length > 1) {
     // '--help', '--version', and '--license' do not take any arguments.
     dieOnExit();
@@ -1366,12 +1361,7 @@ function run() {
   }
 
   if (options['view-source']) {
-    printSource(options.signed);
-    return;
-  }
-
-  if (options['print-keyboard']) {
-    console.log(QWERTY);
+    printSource();
     return;
   }
 
