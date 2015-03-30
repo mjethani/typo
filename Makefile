@@ -12,13 +12,15 @@ typo.js.asc: typo.js
 SIGNED.md: typo.js.asc
 	keybase dir sign
 
+verify:
+	keybase dir verify && keybase verify typo.js.asc
+
 release: SIGNED.md
-	git commit -am 'Signed PGP:E6B74303'
-	git tag v$(VERSION)
+	git commit -am 'Signed PGP:E6B74303' && git tag v$(VERSION)
 
 clean:
 	rm -fv typo.js
 	git checkout SIGNED.md typo.js.asc
 
-.PHONY: clean SIGNED.md release
+.PHONY: clean SIGNED.md verify release
 
