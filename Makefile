@@ -1,4 +1,4 @@
-all:
+all: SIGNED.md
 
 $(VERSION):
 	bash version.sh $(VERSION)
@@ -15,12 +15,14 @@ SIGNED.md: typo.js.asc
 verify:
 	keybase dir verify && keybase verify typo.js.asc
 
-release: SIGNED.md
+ifdef VERSION
+tag: SIGNED.md
 	git commit -am 'Signed PGP:E6B74303' && git tag v$(VERSION)
+endif
 
 clean:
 	rm -fv typo.js
 	git checkout SIGNED.md typo.js.asc
 
-.PHONY: clean SIGNED.md verify release
+.PHONY: clean SIGNED.md verify tag
 
