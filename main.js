@@ -1,10 +1,10 @@
 /*  ----------------------------------------------------------------------------
- *  typo v0.4.8
+ *  typo v0.4.9
  *  
  *  Hide secret information in typographical errors
  *  
  *  Author:  Manish Jethani (manish.jethani@gmail.com)
- *  Date:    March 29, 2015
+ *  Date:    March 30, 2015
  *  
  *  PGP: 57F8 9653 7461 1F9C EEF9 578B FBDC 955C E6B7 4303
  *  
@@ -35,7 +35,7 @@ var readline = require('readline');
 var stream   = require('stream');
 
 var _name    = 'typo';
-var _version = '0.4.8';
+var _version = '0.4.9';
 
 var QWERTY  = !'<%= package %>' && '<%= keyboard %>';
 
