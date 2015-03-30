@@ -6,6 +6,8 @@
  *  Author:  Manish Jethani (manish.jethani@gmail.com)
  *  Date:    March 30, 2015
  *  
+ *  See 'typo --help'
+ *  
  *  PGP: 57F8 9653 7461 1F9C EEF9 578B FBDC 955C E6B7 4303
  *  
  *  Bitcoin: 1NxChtv1R6q6STF9rq1BZsZ4jUKDh5MsQg
