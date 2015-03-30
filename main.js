@@ -41,7 +41,8 @@ var QWERTY  = !'<%= package %>' && '<%= keyboard %>';
 
 var WORDS   = !'<%= package %>' && '<%= dictionary %>'.split('\n');
 
-var HELP_TEXT = !'<%= package %>' && '<%= help %>';
+var HELP_TEXT     = !'<%= package %>' && '<%= help %>';
+var LICENSE_TEXT  = !'<%= package %>' && '<%= license %>';
 
 var dictionary = {};
 
@@ -639,6 +640,11 @@ function printHelp() {
 }
 
 function printLicense() {
+  if (LICENSE_TEXT) {
+    process.stdout.write(LICENSE_TEXT);
+    return;
+  }
+
   dumpFile(path.join(__dirname, 'LICENSE'));
 }
 

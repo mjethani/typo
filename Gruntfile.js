@@ -16,6 +16,7 @@ function sign(grunt, done) {
       keyboard:   jsStringEscape(grunt.file.read('QWERTY.keyboard')),
       dictionary: jsStringEscape(grunt.file.read('dictionary')),
       help:       jsStringEscape(grunt.file.read('default.help')),
+      license:    jsStringEscape(grunt.file.read('LICENSE')),
     }
   };
 
