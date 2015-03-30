@@ -37,9 +37,9 @@ var stream   = require('stream');
 var _name    = 'typo';
 var _version = '0.4.8';
 
-var QWERTY    = !'<%= package %>' && '<%= keyboard %>';
+var QWERTY  = !'<%= package %>' && '<%= keyboard %>';
 
-var WORDS     = !'<%= package %>' && '<%= dictionary %>'.split('\n');
+var WORDS   = !'<%= package %>' && '<%= dictionary %>'.split('\n');
 
 var HELP_TEXT = !'<%= package %>' && '<%= help %>';
 
@@ -218,7 +218,7 @@ function parseArgs(args) {
             eq = arg.length;
           }
 
-          var name  = arg.slice(2, eq);
+          var name = arg.slice(2, eq);
 
           if (!single && !defaultOptions.hasOwnProperty(name)) {
             obj['!?'].push(arg.slice(0, eq));
@@ -649,6 +649,7 @@ function printSource() {
 function printUsage() {
   var seeHelp = os.EOL + os.EOL + "See '" + _name + " --help'."
               + os.EOL + os.EOL;
+
   var breakAt = '\n\n';
 
   if (HELP_TEXT) {
