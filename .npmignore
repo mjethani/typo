@@ -1,0 +1,16 @@
+.npmignore
+.gitignore
+
+*.txt
+
+typo.js
+
+node_modules/
+
+.*.swp
+.*.tmp
+
+Makefile
+
+*.sh
+
