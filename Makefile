@@ -11,7 +11,15 @@ typo.js: main.js QWERTY.keyboard dictionary default.help LICENSE $(VERSION)
 typo.js.asc: typo.js
 	keybase sign typo.js
 
-SIGNED.md: typo.js.asc
+.npmignore: .gitignore
+	sort -ru .gitignore > .npmignore
+	echo '.gitignore .npmignore Makefile *.sh' | tr ' ' '\n' >> .npmignore
+
+.kbignore: .npmignore
+	sort -ru .npmignore > .kbignore
+	echo package.json >> .kbignore
+
+SIGNED.md: typo.js.asc .kbignore
 	keybase dir sign
 
 verify:
