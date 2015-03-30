@@ -12,7 +12,8 @@
     "typo": "./typo"
   },
   "scripts": {
-    "sign": "keybase sign typo.js && keybase dir sign"
+    "build": "bash build.sh",
+    "sign":  "keybase sign typo.js && keybase dir sign"
   },
   "keywords": [
     "steganography",

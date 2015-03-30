@@ -635,6 +635,7 @@ function printVersion() {
 function printHelp() {
   if (HELP_TEXT) {
     process.stdout.write(HELP_TEXT);
+    process.stdout.write(os.EOL);
     return;
   }
 
@@ -644,6 +645,7 @@ function printHelp() {
 function printLicense() {
   if (LICENSE_TEXT) {
     process.stdout.write(LICENSE_TEXT);
+    process.stdout.write(os.EOL);
     return;
   }
 
