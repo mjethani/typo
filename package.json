@@ -1,6 +1,6 @@
 {
   "name": "typo-steganography",
-  "version": "0.4.10",
+  "version": "0.4.11",
   "description": "Hide secret information in typographical errors",
   "author": {
     "name": "Manish Jethani",

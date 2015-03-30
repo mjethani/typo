@@ -1,5 +1,5 @@
 /*  ----------------------------------------------------------------------------
- *  typo v0.4.10
+ *  typo v0.4.11
  *  
  *  Hide secret information in typographical errors
  *  
@@ -37,7 +37,7 @@ var readline = require('readline');
 var stream   = require('stream');
 
 var _name    = 'typo';
-var _version = '0.4.10';
+var _version = '0.4.11';
 
 var QWERTY  = !'<%= package %>' && '<%= keyboard %>';
 
