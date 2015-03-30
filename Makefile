@@ -15,11 +15,13 @@ SIGNED.md: typo.js.asc
 	keybase dir sign
 
 verify:
-	keybase dir verify && keybase verify typo.js.asc
+	keybase dir verify
+	keybase verify typo.js.asc
 
 ifdef VERSION
 tag: SIGNED.md
-	git commit -am 'Signed PGP:E6B74303' && git tag v$(VERSION)
+	git commit -am 'Signed PGP:E6B74303'
+	git tag v$(VERSION)
 endif
 
 clean:
