@@ -3,6 +3,8 @@ all: SIGNED.md
 $(VERSION):
 	bash version.sh $(VERSION)
 
+version: $(VERSION)
+
 typo.js: main.js QWERTY.keyboard dictionary default.help LICENSE $(VERSION)
 	bash build.sh
 
@@ -24,5 +26,5 @@ clean:
 	rm -fv typo.js
 	git checkout SIGNED.md typo.js.asc
 
-.PHONY: clean SIGNED.md verify tag
+.PHONY: clean version SIGNED.md verify tag
 
