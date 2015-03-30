@@ -110,8 +110,7 @@ These are the options:
         ASDFGHJKL;'  
         ZXCVBNM,./   
 
-      If this does not match your keyboard, you can use this option to specify
-      your own layout.
+      You can use this option to specify your own layout.
 
   --dictionary-file=<dictionary-file>
       The dictionary file to use for typo generation.
