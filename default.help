@@ -101,7 +101,7 @@ These are the options:
       '--dictionary-file' have no significance.
 
   --keyboard-file=<keyboard-file>
-      A file containing the keyboard layout to use for typo generation.
+      The keyboard file to use for typo generation.
 
       By default the program uses a standard QWERTY layout:
 
@@ -119,15 +119,15 @@ These are the options:
       appearing one word per line.
 
       The dictionary is used to evaluate the plausibility of a keyboard-based
-      auto-generated typing error. If a trigram (three-letter sequence) appears
-      more frequently in the dictionary, it is considered more likely to appear
-      in a mistyped word.
+      typing error. If a trigram (three-letter sequence) appears more
+      frequently in the dictionary, it is considered more likely to appear in a
+      mistyped word.
 
       The default built-in dictionary contains about 1,500 words of the English
       language.
 
   --highlight=<highlight>
-      How to highlight the typos on the terminal.
+      How to highlight the typos.
 
       The value must be of the format
       '<color>[ <background-color>[ text-style]]'. e.g. 'white red bold'
