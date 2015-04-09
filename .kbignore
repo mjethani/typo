@@ -1,18 +1,11 @@
+typo.js
+node_modules/
+Makefile
 .npmignore
 .gitignore
-
-package.json
-
-*.txt
-
-typo.js
-
-node_modules/
-
-.*.swp
 .*.tmp
-
-Makefile
-
+.*.swp
+*.txt
 *.sh
 
+package.json

@@ -1,16 +1,10 @@
-.npmignore
-.gitignore
-
+typo.js
+node_modules/
+.*.tmp
+.*.swp
 *.txt
 
-typo.js
-
-node_modules/
-
-.*.swp
-.*.tmp
-
+.gitignore
+.npmignore
 Makefile
-
 *.sh
-

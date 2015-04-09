@@ -1,10 +1,10 @@
 /*  ----------------------------------------------------------------------------
- *  typo v0.4.11
+ *  typo v0.4.12
  *  
  *  Hide secret information in typographical errors
  *  
  *  Author:  Manish Jethani (manish.jethani@gmail.com)
- *  Date:    March 30, 2015
+ *  Date:    April 9, 2015
  *  
  *  See 'typo --help'
  *  
@@ -37,7 +37,7 @@ var readline = require('readline');
 var stream   = require('stream');
 
 var _name    = 'typo';
-var _version = '0.4.11';
+var _version = '0.4.12';
 
 var QWERTY  = !'<%= package %>' && '<%= keyboard %>';
 
