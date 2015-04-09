@@ -8,7 +8,7 @@ fi
 
 version=$1
 
-date=$(date +'%B %d, %Y')
+date=$(date +'%B %-d, %Y')
 
 cp -f README.md .README.md.tmp
 sed -E "s/^(#+ Version ).+$/\1$version/" .README.md.tmp > README.md
